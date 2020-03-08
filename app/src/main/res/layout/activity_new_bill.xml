@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".NewBillActivity">
+
+    <EditText
+        android:id="@+id/edit_bill_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/big_padding"
+        android:layout_marginBottom="@dimen/big_padding"
+        android:fontFamily="sans-serif-light"
+        android:hint="@string/hint_bill_name"
+        android:inputType="textAutoComplete"
+        android:padding="@dimen/small_padding"
+        android:textSize="18sp" />
+
+    <EditText
+        android:id="@+id/edit_bill_amount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:padding="10dp"
+        android:inputType="numberDecimal"
+        android:text="$0.00" />
+
+    <Spinner
+        android:id="@+id/spinner_days"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:dropDownWidth="100dp"
+        android:entries="@array/day_array"
+        android:minWidth="100dp"
+        android:spinnerMode="dropdown"
+        android:textAlignment="center"
+        android:padding="10dp"/>
+
+    <Button
+        android:id="@+id/button_save"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:text="@string/button_save"
+        android:textColor="@color/buttonLabel" />
+
+</LinearLayout>
