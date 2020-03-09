@@ -1,4 +1,4 @@
-package com.cusyas.android.paycheck.Database
+package com.cusyas.android.paycheck.BillDatabase
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

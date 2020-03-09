@@ -1,20 +1,16 @@
 package com.cusyas.android.paycheck
 
-import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
-import android.text.TextUtils
 import android.text.TextWatcher
 import android.view.View
 import android.widget.*
 import androidx.lifecycle.ViewModelProvider
-import com.cusyas.android.paycheck.Database.Bill
-import com.cusyas.android.paycheck.Database.BillViewModel
-import com.cusyas.android.paycheck.R
+import com.cusyas.android.paycheck.BillDatabase.Bill
+import com.cusyas.android.paycheck.BillDatabase.BillViewModel
 import kotlinx.android.synthetic.main.activity_new_bill.*
-import java.lang.NumberFormatException
 import java.text.NumberFormat
 
 class NewBillActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {

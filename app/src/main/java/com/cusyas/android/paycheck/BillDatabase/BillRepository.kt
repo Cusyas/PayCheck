@@ -1,4 +1,4 @@
-package com.cusyas.android.paycheck.Database
+package com.cusyas.android.paycheck.BillDatabase
 
 import androidx.lifecycle.LiveData
 
@@ -7,5 +7,9 @@ class BillRepository(private val billDao: BillDao) {
 
     suspend fun insert(bill: Bill){
         billDao.insert(bill)
+    }
+
+    suspend fun loadById(billId: Int): LiveData<Bill>{
+        return billDao.loadById(billId)
     }
 }

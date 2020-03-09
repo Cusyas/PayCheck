@@ -5,9 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.appcompat.view.menu.ActionMenuItemView
 import androidx.recyclerview.widget.RecyclerView
-import com.cusyas.android.paycheck.Database.Bill
+import com.cusyas.android.paycheck.BillDatabase.Bill
 
 class BillListAdapter internal constructor(
     context: Context

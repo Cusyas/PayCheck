@@ -1,4 +1,4 @@
-package com.cusyas.android.paycheck.Database
+package com.cusyas.android.paycheck.BillDatabase
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
@@ -11,6 +11,9 @@ interface BillDao {
 
     @Query("SELECT * FROM bill_table WHERE id IN (:billIds)")
     fun loadAllByIds(billIds: IntArray): List<Bill>
+
+    @Query("SELECT * FROM BILL_TABLE WHERE id IS :billId")
+    fun loadById(billId: Int): LiveData<Bill>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(bill: Bill)

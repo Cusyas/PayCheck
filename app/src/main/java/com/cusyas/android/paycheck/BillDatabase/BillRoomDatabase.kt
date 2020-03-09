@@ -1,4 +1,4 @@
-package com.cusyas.android.paycheck.Database
+package com.cusyas.android.paycheck.BillDatabase
 
 import android.content.Context
 import androidx.room.Database

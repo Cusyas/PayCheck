@@ -1,4 +1,4 @@
-package com.cusyas.android.paycheck.Database
+package com.cusyas.android.paycheck.BillDatabase
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
@@ -20,6 +20,10 @@ class BillViewModel(application: Application) : AndroidViewModel(application){
 
     fun insert(bill: Bill) = viewModelScope.launch {
         repository.insert(bill)
+    }
+
+    suspend fun loadById(billId: Int):LiveData<Bill>{
+        return repository.loadById(billId)
     }
 
 }
