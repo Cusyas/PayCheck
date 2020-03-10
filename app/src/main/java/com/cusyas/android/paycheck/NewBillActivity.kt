@@ -65,9 +65,10 @@ class NewBillActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener 
 
                     var cleanString = s.toString().replace("\$", "")
                     cleanString = cleanString.replace(",", "")
+                    cleanString = cleanString.replace(".", "")
 
                     val parsed = cleanString.toDouble()
-                    val formatted = NumberFormat.getCurrencyInstance().format(parsed)
+                    val formatted = NumberFormat.getCurrencyInstance().format(parsed/100)
 
                     current = formatted
                     editBillAmount.setText(formatted)
@@ -91,7 +92,7 @@ class NewBillActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener 
                 startActivity(intent)
             }
         }
-        val billId = intent.getIntExtra("billId", -1)
+        billId = intent.getIntExtra("billId", -1)
         //billId[0] = intent.getIntExtra("billId", -1)
         if (billId > -1) {
             billViewModel.loadById(billId).observe(this, Observer {
@@ -99,11 +100,6 @@ class NewBillActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener 
                 editBillAmount.setText(it.bill_amount.toString())
                 daySpinner.setSelection(it.bill_due_date)
             })
-
-
         }
-
     }
-
-
 }
