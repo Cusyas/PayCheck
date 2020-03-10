@@ -65,7 +65,6 @@ class NewBillActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener 
 
                     var cleanString = s.toString().replace("\$", "")
                     cleanString = cleanString.replace(",", "")
-                    //cleanString = cleanString.replace(".", "")
 
                     var parsed = cleanString.toDouble()
                     var formatted = NumberFormat.getCurrencyInstance().format(parsed)
