@@ -9,7 +9,10 @@ class BillRepository(private val billDao: BillDao) {
         billDao.insert(bill)
     }
 
-    suspend fun loadById(billId: Int): LiveData<Bill>{
+    fun loadById(billId: Int): LiveData<Bill>{
         return billDao.loadById(billId)
+    }
+    fun loadAllByIds(billId: IntArray): LiveData<List<Bill>>{
+        return billDao.loadAllByIds(billId)
     }
 }
