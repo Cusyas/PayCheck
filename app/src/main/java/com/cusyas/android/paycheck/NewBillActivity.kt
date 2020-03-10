@@ -66,8 +66,8 @@ class NewBillActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener 
                     var cleanString = s.toString().replace("\$", "")
                     cleanString = cleanString.replace(",", "")
 
-                    var parsed = cleanString.toDouble()
-                    var formatted = NumberFormat.getCurrencyInstance().format(parsed)
+                    val parsed = cleanString.toDouble()
+                    val formatted = NumberFormat.getCurrencyInstance().format(parsed)
 
                     current = formatted
                     editBillAmount.setText(formatted)
@@ -83,7 +83,6 @@ class NewBillActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener 
                 Toast.makeText(this,"Bill name cannot be empty", Toast.LENGTH_LONG).show()
             }
             else{
-                //if (selectedDay == null) selectedDay = "1"
                 var billAmount = editBillAmount.text.toString().replace("\$", "")
                 billAmount = billAmount.replace(",", "")
                 val bill = Bill(edit_bill_name.text.toString(), billAmount.toDouble(), daySpinner.selectedItemPosition)
@@ -92,7 +91,7 @@ class NewBillActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener 
                 startActivity(intent)
             }
         }
-        var billId = intent.getIntExtra("billId", -1)
+        val billId = intent.getIntExtra("billId", -1)
         //billId[0] = intent.getIntExtra("billId", -1)
         if (billId > -1) {
             billViewModel.loadById(billId).observe(this, Observer {
