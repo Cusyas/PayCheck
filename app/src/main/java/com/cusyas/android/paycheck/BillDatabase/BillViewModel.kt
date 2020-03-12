@@ -30,4 +30,8 @@ class BillViewModel(application: Application) : AndroidViewModel(application){
         return repository.loadAllByIds(billId)
     }
 
+    fun updateBill(bill: Bill) = viewModelScope.launch{
+        repository.updateBill(bill)
+    }
+
 }

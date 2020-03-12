@@ -15,4 +15,7 @@ class BillRepository(private val billDao: BillDao) {
     fun loadAllByIds(billId: IntArray): LiveData<List<Bill>>{
         return billDao.loadAllByIds(billId)
     }
+    suspend fun updateBill(bill: Bill){
+        billDao.updateBill(bill)
+    }
 }

@@ -4,13 +4,11 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
+import android.text.Selection
 import android.text.TextWatcher
 import android.view.View
 import android.widget.*
-import androidx.core.view.get
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.cusyas.android.paycheck.BillDatabase.Bill
 import com.cusyas.android.paycheck.BillDatabase.BillViewModel
@@ -44,9 +42,32 @@ class NewBillActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener 
         val button = findViewById<Button>(R.id.button_save)
         editBillAmount = findViewById(R.id.edit_bill_amount)
         editBillNameView = findViewById(R.id.edit_bill_name)
+
+
+
         daySpinner = findViewById(R.id.spinner_days)
 
         billViewModel = ViewModelProvider(this).get(billViewModel::class.java)
+
+        var current = ""
+        billId = intent.getIntExtra("billId", -1)
+        if (billId > -1) {
+            billViewModel.loadById(billId).observe(this, Observer {
+                editBillNameView.setText(it.bill_name)
+                var billAmount = it.bill_amount * 10
+                var cleanString = billAmount.toString().replace(",", "")
+                cleanString = cleanString.replace(".", "")
+
+                val parsed = cleanString.toDouble()
+                val formatted = NumberFormat.getCurrencyInstance().format(parsed/100)
+
+                current = formatted
+                editBillAmount.setText(formatted)
+                // -1 because the index for the spinner starts at 0
+                daySpinner.setSelection(it.bill_due_date-1)
+            })
+        }
+
 
 
 
@@ -58,9 +79,19 @@ class NewBillActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
 
             }
-            var current = ""
+
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                if (!s.toString().equals(current)){
+                var formatted = ""
+                if (!s.toString().isNullOrEmpty()){
+                    var cleanString = s.toString().replace(",", "")
+                    cleanString = cleanString.replace("\$", "")
+                    cleanString = cleanString.replace(".", "")
+
+                    val parsed = cleanString.toDouble()
+                    formatted = NumberFormat.getCurrencyInstance().format(parsed/100)
+                }
+                if (formatted != current){
+
                     editBillAmount.removeTextChangedListener(this)
 
                     var cleanString = s.toString().replace("\$", "")
@@ -84,22 +115,25 @@ class NewBillActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener 
                 Toast.makeText(this,"Bill name cannot be empty", Toast.LENGTH_LONG).show()
             }
             else{
-                var billAmount = editBillAmount.text.toString().replace("\$", "")
+                var billAmount = editBillAmount.text.toString()
+                billAmount = billAmount.replace("\$", "")
                 billAmount = billAmount.replace(",", "")
-                val bill = Bill(edit_bill_name.text.toString(), billAmount.toDouble(), daySpinner.selectedItemPosition)
-                billViewModel.insert(bill)
+
+                // +1 is added to the daySpinner because the index starts at 0 but the spinner is for the due date
+                val bill = Bill(edit_bill_name.text.toString(), billAmount.toDouble(), daySpinner.selectedItemPosition+1)
+                if (billId == -1){
+                    billViewModel.insert(bill)
+                } else{
+                    bill.bill_id = billId
+                    billViewModel.updateBill(bill)
+                }
                 val intent = Intent(this, MainActivity::class.java)
                 startActivity(intent)
             }
         }
-        billId = intent.getIntExtra("billId", -1)
-        //billId[0] = intent.getIntExtra("billId", -1)
-        if (billId > -1) {
-            billViewModel.loadById(billId).observe(this, Observer {
-                editBillNameView.setText(it.bill_name)
-                editBillAmount.setText(it.bill_amount.toString())
-                daySpinner.setSelection(it.bill_due_date)
-            })
-        }
+
+        // moving the cursor to the end of the name
+        editBillNameView.requestFocus()
+        editBillNameView.setSelection(editBillNameView.text.length)
     }
 }

@@ -15,6 +15,9 @@ interface BillDao {
     @Query("SELECT * FROM BILL_TABLE WHERE bill_id = :billId")
     fun loadById(billId: Int): LiveData<Bill>
 
+    @Update
+    suspend fun updateBill(bill: Bill)
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(bill: Bill)
 
