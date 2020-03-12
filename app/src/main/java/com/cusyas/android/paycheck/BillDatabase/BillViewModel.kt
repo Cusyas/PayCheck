@@ -22,8 +22,16 @@ class BillViewModel(application: Application) : AndroidViewModel(application){
         repository.insert(bill)
     }
 
-    suspend fun loadById(billId: Int):LiveData<Bill>{
+    fun loadById(billId: Int):LiveData<Bill>{
         return repository.loadById(billId)
+    }
+
+    fun loadAllByIds(billId: IntArray):LiveData<List<Bill>>{
+        return repository.loadAllByIds(billId)
+    }
+
+    fun updateBill(bill: Bill) = viewModelScope.launch{
+        repository.updateBill(bill)
     }
 
 }

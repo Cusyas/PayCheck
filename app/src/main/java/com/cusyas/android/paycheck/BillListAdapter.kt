@@ -1,32 +1,47 @@
 package com.cusyas.android.paycheck
 
 import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.cusyas.android.paycheck.BillDatabase.Bill
+import java.text.NumberFormat
 
 class BillListAdapter internal constructor(
     context: Context
 ) : RecyclerView.Adapter<BillListAdapter.BillViewHolder>(){
 
+    interface OnItemClickListener{
+        fun onItemClicked(position: Int,view: View)
+    }
+
     private val inflater: LayoutInflater = LayoutInflater.from(context)
     private var bills = emptyList<Bill>()
 
-    inner class BillViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
-        val billItemView: TextView = itemView.findViewById(R.id.textView)
+    class BillViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
+        val billNameItemView: TextView = itemView.findViewById(R.id.tv_bill_name)
+        val billDueDateItemView: TextView = itemView.findViewById(R.id.tv_bill_due_date)
+        val billAmountItemView: TextView = itemView.findViewById(R.id.tv_bill_amount)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BillViewHolder{
         val itemView = inflater.inflate(R.layout.recyclerview_item, parent, false)
-        return BillViewHolder(itemView)
-    }
+        val viewHolder = BillViewHolder(itemView)
+        itemView.setOnClickListener {
+            onClick(viewHolder.layoutPosition, itemView)
+        }
+
+            return viewHolder
+        }
+
 
     override fun onBindViewHolder(holder: BillViewHolder, position: Int) {
-        val current = bills[position]
-        holder.billItemView.text = current.bill_name
+        holder.billNameItemView.text = bills[position].bill_name
+        holder.billDueDateItemView.append(bills[position].bill_due_date.toString())
+        holder.billAmountItemView.append(NumberFormat.getCurrencyInstance().format(bills[position].bill_amount))
     }
 
     internal fun setBills(bills: List<Bill>){
@@ -35,4 +50,13 @@ class BillListAdapter internal constructor(
     }
 
     override fun getItemCount() = bills.size
+
+
+    fun onClick(position: Int, v: View) {
+
+        val intent = Intent(v.context, NewBillActivity::class.java)
+        intent.putExtra("billId", bills[position].bill_id)
+        v.context.startActivity(intent)
+
+    }
 }
