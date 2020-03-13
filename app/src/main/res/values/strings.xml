@@ -4,4 +4,6 @@
     <string name="hint_bill_name">Enter Bill Name</string>
     <string name="button_save">Save</string>
     <string name="empty_not_saved">Word not saved because it is empty</string>
+    <string name="switch_paid">Bill is paid &#160;&#160;</string>
+    <string name="switch_not_paid">Bill is not paid &#160;&#160;</string>
 </resources>

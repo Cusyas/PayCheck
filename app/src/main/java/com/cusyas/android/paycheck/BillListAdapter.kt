@@ -2,6 +2,8 @@ package com.cusyas.android.paycheck
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.Color.*
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -33,7 +35,6 @@ class BillListAdapter internal constructor(
         itemView.setOnClickListener {
             onClick(viewHolder.layoutPosition, itemView)
         }
-
             return viewHolder
         }
 
@@ -42,6 +43,14 @@ class BillListAdapter internal constructor(
         holder.billNameItemView.text = bills[position].bill_name
         holder.billDueDateItemView.append(bills[position].bill_due_date.toString())
         holder.billAmountItemView.append(NumberFormat.getCurrencyInstance().format(bills[position].bill_amount))
+
+        // check if the bill is paid, setting the background accordingly
+        if (bills[position].bill_paid){
+            holder.itemView.setBackgroundColor(GREEN)
+        }
+        else{
+            holder.itemView.setBackgroundColor(RED)
+        }
     }
 
     internal fun setBills(bills: List<Bill>){

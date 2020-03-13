@@ -7,6 +7,15 @@
     android:orientation="vertical"
     tools:context=".NewBillActivity">
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/tb_bill_edit"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimary"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+
     <EditText
         android:id="@+id/edit_bill_name"
         android:layout_width="match_parent"
@@ -39,6 +48,15 @@
         android:textAlignment="center"
         android:padding="10dp"/>
 
+    <Switch
+        android:id="@+id/sw_bill_paid"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingStart="10dp"
+        android:showText="false"
+        android:text="@string/switch_not_paid"
+        android:textSize="18sp" />
+
     <Button
         android:id="@+id/button_save"
         android:layout_width="match_parent"
@@ -46,5 +64,6 @@
         android:background="@color/colorPrimary"
         android:text="@string/button_save"
         android:textColor="@color/buttonLabel" />
+
 
 </LinearLayout>
