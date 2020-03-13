@@ -4,21 +4,22 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.Color.*
+import android.graphics.drawable.GradientDrawable
+import android.graphics.drawable.LayerDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.cusyas.android.paycheck.BillDatabase.Bill
+import com.cusyas.android.paycheck.Utils.BillDueDateDistance
 import java.text.NumberFormat
+import java.util.*
 
 class BillListAdapter internal constructor(
     context: Context
 ) : RecyclerView.Adapter<BillListAdapter.BillViewHolder>(){
-
-    interface OnItemClickListener{
-        fun onItemClicked(position: Int,view: View)
-    }
 
     private val inflater: LayoutInflater = LayoutInflater.from(context)
     private var bills = emptyList<Bill>()
@@ -49,7 +50,12 @@ class BillListAdapter internal constructor(
             holder.itemView.setBackgroundColor(GREEN)
         }
         else{
-            holder.itemView.setBackgroundColor(RED)
+
+            if (bills[position].bill_due_date < Calendar.getInstance().get(Calendar.DAY_OF_MONTH)) {
+                holder.itemView.setBackgroundColor(RED)
+            }else{
+                holder.itemView.setBackgroundColor(YELLOW)
+            }
         }
     }
 
@@ -61,7 +67,7 @@ class BillListAdapter internal constructor(
     override fun getItemCount() = bills.size
 
 
-    fun onClick(position: Int, v: View) {
+    private fun onClick(position: Int, v: View) {
 
         val intent = Intent(v.context, NewBillActivity::class.java)
         intent.putExtra("billId", bills[position].bill_id)

@@ -15,6 +15,9 @@ interface BillDao {
     @Query("SELECT * FROM BILL_TABLE WHERE bill_id = :billId")
     fun loadById(billId: Int): LiveData<Bill>
 
+    @Query("SELECT * FROM bill_table ORDER BY bill_paid ASC, bill_due_date ASC")
+    fun getSortedBills(): LiveData<List<Bill>>
+
     @Update
     suspend fun updateBill(bill: Bill)
 
