@@ -18,4 +18,7 @@ class BillRepository(private val billDao: BillDao) {
     suspend fun updateBill(bill: Bill){
         billDao.updateBill(bill)
     }
+    suspend fun deleteBill(bill: Bill){
+        billDao.delete(bill)
+    }
 }

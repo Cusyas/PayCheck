@@ -22,5 +22,5 @@ interface BillDao {
     suspend fun insert(bill: Bill)
 
     @Delete
-    fun delete(bill: Bill)
+    suspend fun delete(bill: Bill)
 }

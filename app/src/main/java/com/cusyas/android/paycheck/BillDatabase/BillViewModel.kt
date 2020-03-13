@@ -34,4 +34,8 @@ class BillViewModel(application: Application) : AndroidViewModel(application){
         repository.updateBill(bill)
     }
 
+    fun deleteBill(bill: Bill) = viewModelScope.launch {
+        repository.deleteBill(bill)
+    }
+
 }
