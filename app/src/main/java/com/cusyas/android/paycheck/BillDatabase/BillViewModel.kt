@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 class BillViewModel(application: Application) : AndroidViewModel(application){
@@ -36,6 +37,12 @@ class BillViewModel(application: Application) : AndroidViewModel(application){
 
     fun deleteBill(bill: Bill) = viewModelScope.launch {
         repository.deleteBill(bill)
+    }
+
+    fun resetAllPaid(){
+        GlobalScope.launch {
+            repository.resetAllPAid()
+        }
     }
 
 }

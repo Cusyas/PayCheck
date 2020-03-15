@@ -3,7 +3,7 @@ package com.cusyas.android.paycheck.BillDatabase
 import androidx.lifecycle.LiveData
 
 class BillRepository(private val billDao: BillDao) {
-    val allBills: LiveData<List<Bill>> = billDao.getAlphabetizedBills()
+    val allBills: LiveData<List<Bill>> = billDao.getSortedBills()
 
     suspend fun insert(bill: Bill){
         billDao.insert(bill)
@@ -21,4 +21,9 @@ class BillRepository(private val billDao: BillDao) {
     suspend fun deleteBill(bill: Bill){
         billDao.delete(bill)
     }
+
+    suspend fun resetAllPAid(){
+        billDao.resetAllPaid()
+    }
+
 }

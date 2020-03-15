@@ -2,6 +2,8 @@ package com.cusyas.android.paycheck
 
 import android.content.DialogInterface
 import android.content.Intent
+import android.graphics.Color.*
+import android.graphics.drawable.ColorDrawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
@@ -17,6 +19,7 @@ import com.cusyas.android.paycheck.BillDatabase.Bill
 import com.cusyas.android.paycheck.BillDatabase.BillViewModel
 import kotlinx.android.synthetic.main.activity_new_bill.*
 import java.text.NumberFormat
+import java.util.*
 
 
 class NewBillActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
@@ -52,6 +55,9 @@ class NewBillActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener 
         setSupportActionBar(findViewById(R.id.tb_bill_edit))
 
 
+
+
+
         val button = findViewById<Button>(R.id.button_save)
         editBillAmount = findViewById(R.id.edit_bill_amount)
         editBillNameView = findViewById(R.id.edit_bill_name)
@@ -85,6 +91,17 @@ class NewBillActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener 
                     editBillAmount.setText(formatted)
                     // -1 because the index for the spinner starts at 0
                     daySpinner.setSelection(it.bill_due_date - 1)
+                    // check if the bill is paid, setting the background accordingly
+                    if (bill.bill_paid){
+                        supportActionBar?.setBackgroundDrawable(ColorDrawable(GREEN))
+                    }
+                    else{
+                        if (bill.bill_due_date < Calendar.getInstance().get(Calendar.DAY_OF_MONTH)) {
+                            supportActionBar?.setBackgroundDrawable(ColorDrawable(RED))
+                        }else{
+                            supportActionBar?.setBackgroundDrawable(ColorDrawable(YELLOW))
+                        }
+                    }
                 }
             })
         }

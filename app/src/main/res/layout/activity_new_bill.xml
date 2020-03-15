@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".NewBillActivity">
+    tools:context=".NewBillActivity"
+    android:background="@android:color/darker_gray">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/tb_bill_edit"

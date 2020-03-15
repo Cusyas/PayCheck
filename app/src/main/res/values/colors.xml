@@ -4,4 +4,7 @@
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
     <color name="buttonLabel">#d3d3d3</color>
+    <color name="billGreen">#008000	</color>
+    <color name="billYellow">#FFFF00</color>
+    <color name="billRed">#FF0000</color>
 </resources>
