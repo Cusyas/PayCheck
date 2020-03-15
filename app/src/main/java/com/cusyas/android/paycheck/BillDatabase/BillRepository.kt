@@ -21,4 +21,9 @@ class BillRepository(private val billDao: BillDao) {
     suspend fun deleteBill(bill: Bill){
         billDao.delete(bill)
     }
+
+    suspend fun resetAllPAid(){
+        billDao.resetAllPaid()
+    }
+
 }

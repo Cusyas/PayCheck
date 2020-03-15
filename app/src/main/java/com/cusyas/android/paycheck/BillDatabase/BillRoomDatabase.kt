@@ -6,7 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import kotlinx.coroutines.CoroutineScope
 
-@Database(entities = arrayOf(Bill::class), version = 2, exportSchema = false)
+@Database(entities = arrayOf(Bill::class), version = 3, exportSchema = false)
 public abstract class BillRoomDatabase : RoomDatabase() {
 
     abstract fun billDao(): BillDao
@@ -26,7 +26,7 @@ public abstract class BillRoomDatabase : RoomDatabase() {
                     BillRoomDatabase::class.java,
                     "bill_database"
                 )
-                    .addMigrations(MIGRATION_1_2)
+                    .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
                     .build()
                 INSTANCE = instance
                 return instance

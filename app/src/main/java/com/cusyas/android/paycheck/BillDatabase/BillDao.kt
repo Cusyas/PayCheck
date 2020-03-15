@@ -21,6 +21,18 @@ interface BillDao {
     @Update
     suspend fun updateBill(bill: Bill)
 
+    @Transaction
+    open suspend fun resetAllPaid(){
+        resetPaid()
+        resetPaidMonthAdvance()
+    }
+
+    @Query ("UPDATE bill_table SET bill_paid = 0 WHERE bill_paid_month_advance = 0")
+    suspend fun resetPaid()
+
+    @Query ("UPDATE bill_table SET bill_paid = 1 AND bill_paid_month_advance = 0 WHERE bill_paid_month_advance = 1")
+    suspend fun resetPaidMonthAdvance()
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(bill: Bill)
 

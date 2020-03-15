@@ -1,6 +1,7 @@
 package com.cusyas.android.paycheck
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -14,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.cusyas.android.paycheck.BillDatabase.BillViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.text.NumberFormat
+import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -26,6 +28,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+
 
         totalDueTextView = findViewById(R.id.tv_total_due)
         val recyclerView = findViewById<RecyclerView>(R.id.recyclerview)
@@ -43,9 +47,16 @@ class MainActivity : AppCompatActivity() {
                         totalDue += it.bill_amount
                     }
                 }
-                totalDueTextView.append("\n" + NumberFormat.getCurrencyInstance().format(totalDue))
+                totalDueTextView.text = resources.getText(R.string.bill_total_amount_due).toString() + ("\n" + NumberFormat.getCurrencyInstance().format(totalDue))
             }
         })
+
+        val sharedPref = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
+        val recentPaidMonth = sharedPref.getInt(getString(R.string.most_recent_paid_month_key), -1)
+        if(recentPaidMonth != Calendar.MONTH){
+            billViewModel.resetAllPaid()
+            sharedPref.edit().putInt(getString(R.string.most_recent_paid_month_key), Calendar.MONTH).commit()
+        }
 
 
 
