@@ -2,6 +2,7 @@ package com.cusyas.android.paycheck
 
 import android.content.DialogInterface
 import android.content.Intent
+import android.graphics.Color
 import android.graphics.Color.*
 import android.graphics.drawable.ColorDrawable
 import androidx.appcompat.app.AppCompatActivity
@@ -30,6 +31,8 @@ class NewBillActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener 
     private lateinit var editBillAmount: EditText
     private lateinit var switchBillPaid: Switch
 
+    private var billPaidBeforeLoading: Boolean? = null
+
     private lateinit var bill: Bill
 
     private var selectedDay: String = "1"
@@ -56,8 +59,6 @@ class NewBillActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener 
 
 
 
-
-
         val button = findViewById<Button>(R.id.button_save)
         editBillAmount = findViewById(R.id.edit_bill_amount)
         editBillNameView = findViewById(R.id.edit_bill_name)
@@ -71,6 +72,7 @@ class NewBillActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener 
         if (billId > -1) {
             billViewModel.loadById(billId).observe(this, Observer {
                 if(it != null) {
+                    billPaidBeforeLoading = it.bill_paid
                     bill = it
                     if (it.bill_paid){
                         switchBillPaid.isChecked = true
@@ -148,30 +150,36 @@ class NewBillActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener 
         switchBillPaid.setOnCheckedChangeListener { buttonView, isChecked ->
             if (isChecked){
                 buttonView.text = resources.getText(R.string.switch_paid)
+                if (billPaidBeforeLoading != null) { supportActionBar?.setBackgroundDrawable(ColorDrawable(GREEN)) }
             } else{
                 buttonView.text = resources.getText(R.string.switch_not_paid)
+                if (billPaidBeforeLoading != null){
+                    if (bill.bill_due_date < Calendar.DAY_OF_MONTH){ supportActionBar?.setBackgroundDrawable(ColorDrawable(RED)) }
+                    else{ supportActionBar?.setBackgroundDrawable(ColorDrawable(YELLOW)) }
+                }
             }
         }
 
         button.setOnClickListener {
-            if (editBillNameView.text.isEmpty()){
-                Toast.makeText(this,"Bill name cannot be empty", Toast.LENGTH_LONG).show()
-            }
-            else{
-                var billAmount = editBillAmount.text.toString()
-                billAmount = billAmount.replace("\$", "")
-                billAmount = billAmount.replace(",", "")
+            when {
+                editBillNameView.text.isEmpty() -> Toast.makeText(this,"Bill name cannot be empty", Toast.LENGTH_LONG).show()
+                editBillAmount.text.isEmpty() -> Toast.makeText(this,"Bill amount cannot be empty", Toast.LENGTH_LONG).show()
+                else -> {
+                    var billAmount = editBillAmount.text.toString()
+                    billAmount = billAmount.replace("\$", "")
+                    billAmount = billAmount.replace(",", "")
 
-                // +1 is added to the daySpinner because the index starts at 0 but the spinner is for the due date
-                bill = Bill(edit_bill_name.text.toString(), billAmount.toDouble(), daySpinner.selectedItemPosition+1, switchBillPaid.isChecked)
-                if (billId == -1){
-                    billViewModel.insert(bill)
-                } else{
-                    bill.bill_id = billId
-                    billViewModel.updateBill(bill)
+                    // +1 is added to the daySpinner because the index starts at 0 but the spinner is for the due date
+                    bill = Bill(edit_bill_name.text.toString(), billAmount.toDouble(), daySpinner.selectedItemPosition+1, switchBillPaid.isChecked)
+                    if (billId == -1){
+                        billViewModel.insert(bill)
+                    } else{
+                        bill.bill_id = billId
+                        billViewModel.updateBill(bill)
+                    }
+                    val intent = Intent(this, MainActivity::class.java)
+                    startActivity(intent)
                 }
-                val intent = Intent(this, MainActivity::class.java)
-                startActivity(intent)
             }
         }
 
