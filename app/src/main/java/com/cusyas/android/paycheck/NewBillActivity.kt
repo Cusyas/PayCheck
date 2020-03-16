@@ -18,6 +18,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.cusyas.android.paycheck.BillDatabase.Bill
 import com.cusyas.android.paycheck.BillDatabase.BillViewModel
+import com.google.android.material.textfield.TextInputLayout
 import kotlinx.android.synthetic.main.activity_new_bill.*
 import java.text.NumberFormat
 import java.util.*
@@ -57,11 +58,15 @@ class NewBillActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener 
         setContentView(R.layout.activity_new_bill)
         setSupportActionBar(findViewById(R.id.tb_bill_edit))
 
+        var filler: TextInputLayout = findViewById(R.id.edit_bill_amount)
+        editBillAmount = filler.editText!!
 
 
         val button = findViewById<Button>(R.id.button_save)
-        editBillAmount = findViewById(R.id.edit_bill_amount)
-        editBillNameView = findViewById(R.id.edit_bill_name)
+
+
+        filler = findViewById(R.id.edit_bill_name)
+        editBillNameView = filler.editText!!
         daySpinner = findViewById(R.id.spinner_days)
         switchBillPaid = findViewById(R.id.sw_bill_paid)
 
@@ -116,34 +121,22 @@ class NewBillActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
 
             }
-
+            var textCurrent = ""
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                var formatted = ""
-                if (!s.toString().isNullOrEmpty()){
-                    var cleanString = s.toString().replace(",", "")
-                    cleanString = cleanString.replace("\$", "")
-                    cleanString = cleanString.replace(".", "")
+                editBillAmount.removeTextChangedListener(this)
+                var cleanString: String = s.toString().replace("\$","")
+                cleanString = cleanString.replace(",", "")
+                cleanString = cleanString.replace(".", "")
 
-                    val parsed = cleanString.toDouble()
-                    formatted = NumberFormat.getCurrencyInstance().format(parsed/100)
-                }
-                if (formatted != current){
+                var parsed: Double = cleanString.toDouble()
+                var formatted: String = NumberFormat.getCurrencyInstance().format(parsed/100)
+                current = formatted
 
-                    editBillAmount.removeTextChangedListener(this)
+                editBillAmount.setText(formatted)
+                editBillAmount.setSelection(formatted.length)
 
-                    var cleanString = s.toString().replace("\$", "")
-                    cleanString = cleanString.replace(",", "")
-                    cleanString = cleanString.replace(".", "")
+                editBillAmount.addTextChangedListener(this)
 
-                    val parsed = cleanString.toDouble()
-                    val formatted = NumberFormat.getCurrencyInstance().format(parsed/100)
-
-                    current = formatted
-                    editBillAmount.setText(formatted)
-                    editBillAmount.setSelection(formatted.length)
-
-                    editBillAmount.addTextChangedListener(this)
-                }
             }
         })
 
@@ -170,7 +163,7 @@ class NewBillActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener 
                     billAmount = billAmount.replace(",", "")
 
                     // +1 is added to the daySpinner because the index starts at 0 but the spinner is for the due date
-                    bill = Bill(edit_bill_name.text.toString(), billAmount.toDouble(), daySpinner.selectedItemPosition+1, switchBillPaid.isChecked)
+                    bill = Bill(edit_bill_name.editText?.text.toString(), billAmount.toDouble(), daySpinner.selectedItemPosition+1, switchBillPaid.isChecked)
                     if (billId == -1){
                         billViewModel.insert(bill)
                     } else{
