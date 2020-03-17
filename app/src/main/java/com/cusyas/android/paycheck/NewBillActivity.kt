@@ -2,7 +2,6 @@ package com.cusyas.android.paycheck
 
 import android.content.DialogInterface
 import android.content.Intent
-import android.graphics.Color
 import android.graphics.Color.*
 import android.graphics.drawable.ColorDrawable
 import androidx.appcompat.app.AppCompatActivity
@@ -18,6 +17,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.cusyas.android.paycheck.BillDatabase.Bill
 import com.cusyas.android.paycheck.BillDatabase.BillViewModel
+import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.android.material.textfield.TextInputLayout
 import kotlinx.android.synthetic.main.activity_new_bill.*
 import java.text.NumberFormat
@@ -30,7 +30,8 @@ class NewBillActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener 
     private lateinit var daySpinner: Spinner
     private lateinit var billViewModel: BillViewModel
     private lateinit var editBillAmount: EditText
-    private lateinit var switchBillPaid: Switch
+    private lateinit var switchBillPaid: SwitchMaterial
+    private lateinit var switchBillPaidText: TextView
 
     private var billPaidBeforeLoading: Boolean? = null
 
@@ -61,16 +62,24 @@ class NewBillActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener 
         var filler: TextInputLayout = findViewById(R.id.edit_bill_amount)
         editBillAmount = filler.editText!!
 
+        switchBillPaidText = findViewById(R.id.switchTextView)
 
         val button = findViewById<Button>(R.id.button_save)
 
 
         filler = findViewById(R.id.edit_bill_name)
         editBillNameView = filler.editText!!
+
         daySpinner = findViewById(R.id.spinner_days)
+
         switchBillPaid = findViewById(R.id.sw_bill_paid)
 
         billViewModel = ViewModelProvider(this).get(billViewModel::class.java)
+
+
+
+        //var editTextFilledExposedDropdown: AutoCompleteTextView = findViewById(R.id.bill_due_date_dropdown)
+        //editTextFilledExposedDropdown.setAdapter(dueDateAdapter)
 
         var current = ""
         billId = intent.getIntExtra("billId", -1)
@@ -81,10 +90,10 @@ class NewBillActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener 
                     bill = it
                     if (it.bill_paid){
                         switchBillPaid.isChecked = true
-                        switchBillPaid.text = resources.getText(R.string.switch_paid)
+                        switchBillPaidText.text = resources.getText(R.string.switch_paid)
                     } else{
                         switchBillPaid.isChecked = false
-                        switchBillPaid.text = resources.getText(R.string.switch_not_paid)
+                        switchBillPaidText.text = resources.getText(R.string.switch_not_paid)
                     }
                     editBillNameView.setText(it.bill_name)
                     var billAmount = it.bill_amount * 10
@@ -142,10 +151,10 @@ class NewBillActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener 
 
         switchBillPaid.setOnCheckedChangeListener { buttonView, isChecked ->
             if (isChecked){
-                buttonView.text = resources.getText(R.string.switch_paid)
+                switchBillPaidText.text = resources.getText(R.string.switch_paid)
                 if (billPaidBeforeLoading != null) { supportActionBar?.setBackgroundDrawable(ColorDrawable(GREEN)) }
             } else{
-                buttonView.text = resources.getText(R.string.switch_not_paid)
+                switchBillPaidText.text = resources.getText(R.string.switch_not_paid)
                 if (billPaidBeforeLoading != null){
                     if (bill.bill_due_date < Calendar.DAY_OF_MONTH){ supportActionBar?.setBackgroundDrawable(ColorDrawable(RED)) }
                     else{ supportActionBar?.setBackgroundDrawable(ColorDrawable(YELLOW)) }

@@ -24,6 +24,7 @@ class BillListAdapter internal constructor(
 ) : RecyclerView.Adapter<BillListAdapter.BillViewHolder>(){
 
     private val inflater: LayoutInflater = LayoutInflater.from(context)
+    private lateinit var customDrawable: BillColorBarDrawable
     private var bills = emptyList<Bill>()
 
     class BillViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
@@ -50,9 +51,13 @@ class BillListAdapter internal constructor(
         val daysUntilDuePercentage = BillDueDateDistance.getColorMix(bills[position].bill_due_date)
         // check if the bill is paid, setting the background accordingly
         if (bills[position].bill_paid){
-            //holder.itemView.setBackgroundColor(GREEN)
-            val colors: IntArray = intArrayOf(ContextCompat.getColor(context,R.color.billGreen), ContextCompat.getColor(context,R.color.billYellow))
-            val customDrawable = BillColorBarDrawable(colors,daysUntilDuePercentage)
+            if (bills[position].bill_due_date < Calendar.DAY_OF_MONTH){
+                val colors: IntArray = intArrayOf(ContextCompat.getColor(context,R.color.billYellow), ContextCompat.getColor(context,R.color.billRed))
+                customDrawable = BillColorBarDrawable(colors,daysUntilDuePercentage)
+            }else {
+                val colors: IntArray = intArrayOf(ContextCompat.getColor(context, R.color.billGreen), ContextCompat.getColor(context, R.color.billYellow))
+                customDrawable = BillColorBarDrawable(colors, daysUntilDuePercentage)
+            }
             holder.itemView.background = customDrawable
         }
         else{

@@ -44,33 +44,69 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:layout_marginStart="5dp"
-            android:inputType="numberDecimal"
             android:hint="Enter Bill Amount" >
             <com.google.android.material.textfield.TextInputEditText
+                android:inputType="numberDecimal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <Spinner
-            android:id="@+id/spinner_days"
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingTop="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="20dp"
+                android:textAlignment="center"
+                android:paddingStart="10dp"
+                android:paddingTop="10dp"
+                android:textStyle="bold"
+                android:text="@string/bill_spinner_text"/>
+
+            <Spinner
+                android:id="@+id/spinner_days"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:dropDownWidth="100dp"
+                android:entries="@array/day_array"
+                android:minWidth="1dp"
+                android:spinnerMode="dropdown"
+                android:textAlignment="center"
+                android:paddingTop="10dp" />
+
+        </LinearLayout>
+
+
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:dropDownWidth="100dp"
-            android:entries="@array/day_array"
-            android:minWidth="100dp"
-            android:spinnerMode="dropdown"
-            android:textAlignment="center"
-            android:padding="10dp"/>
+            android:orientation="horizontal"
+            android:paddingTop="20dp"
+            android:paddingStart="5dp">
 
-        <Switch
+        <com.google.android.material.switchmaterial.SwitchMaterial
             android:id="@+id/sw_bill_paid"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingStart="10dp"
             android:showText="false"
-            android:text="@string/switch_not_paid"
+            android:text=""
             android:textSize="18sp" />
+
+
+            <TextView
+                android:id="@+id/switchTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="5dp"
+                android:textSize="20sp"
+                android:text="@string/switch_not_paid" />
+        </LinearLayout>
+
 
 
     </LinearLayout>
