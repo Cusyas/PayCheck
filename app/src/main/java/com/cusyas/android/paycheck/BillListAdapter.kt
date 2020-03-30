@@ -4,10 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.Color.*
-import android.graphics.drawable.Drawable
-import android.graphics.drawable.GradientDrawable
-import android.graphics.drawable.LayerDrawable
-import android.graphics.drawable.ShapeDrawable
+import android.graphics.drawable.*
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -50,16 +47,33 @@ class BillListAdapter internal constructor(
         holder.billAmountItemView.text = context.getString(R.string.bill_amount_due).toString() + NumberFormat.getCurrencyInstance().format(bills[position].bill_amount)
         val daysUntilDuePercentage = BillDueDateDistance.getColorMix(bills[position].bill_due_date)
         // check if the bill is paid, setting the background accordingly
+
+
         if (bills[position].bill_paid){
-            if (bills[position].bill_due_date < Calendar.getInstance().get(Calendar.DAY_OF_MONTH)){
-                val colors: IntArray = intArrayOf(ContextCompat.getColor(context,R.color.billYellow), ContextCompat.getColor(context,R.color.billRed))
-                customDrawable = BillColorBarDrawable(colors,daysUntilDuePercentage)
-            }else {
-                val colors: IntArray = intArrayOf(ContextCompat.getColor(context, R.color.billGreen), ContextCompat.getColor(context, R.color.billYellow))
-                customDrawable = BillColorBarDrawable(colors, daysUntilDuePercentage)
+            if (bills[position].bill_paid_month_advance){
+                holder.itemView.background = ColorDrawable(context.getColor(R.color.billGreen))
             }
-            holder.itemView.background = customDrawable
+            else {
+                if (bills[position].bill_due_date < Calendar.getInstance()
+                        .get(Calendar.DAY_OF_MONTH)
+                ) {
+                    val colors: IntArray = intArrayOf(
+                        ContextCompat.getColor(context, R.color.billYellow),
+                        ContextCompat.getColor(context, R.color.billRed)
+                    )
+                    customDrawable = BillColorBarDrawable(colors, daysUntilDuePercentage)
+                } else {
+                    val colors: IntArray = intArrayOf(
+                        ContextCompat.getColor(context, R.color.billGreen),
+                        ContextCompat.getColor(context, R.color.billYellow)
+                    )
+                    customDrawable = BillColorBarDrawable(colors, daysUntilDuePercentage)
+                }
+                holder.itemView.background = customDrawable
+            }
         }
+
+
         else{
             if (bills[position].bill_due_date < Calendar.getInstance().get(Calendar.DAY_OF_MONTH)) {
                 holder.itemView.setBackgroundColor(RED)

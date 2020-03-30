@@ -22,7 +22,7 @@ class BillRepository(private val billDao: BillDao) {
         billDao.delete(bill)
     }
 
-    suspend fun resetAllPAid(){
+    suspend fun resetAllPaid(){
         billDao.resetAllPaid()
     }
 

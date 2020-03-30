@@ -3,9 +3,9 @@ package com.cusyas.android.paycheck
 import android.graphics.*
 import android.graphics.drawable.Drawable
 
-class BillColorBarDrawable(barColors: IntArray, daysTillDuePercentage: Float): Drawable() {
+class BillColorBarDrawable(barColors: IntArray, days: Float): Drawable() {
     var barColors: IntArray = barColors
-    val daysTillDuePercentage = daysTillDuePercentage
+    val daysTillDuePercentage = days
 
     override fun draw(canvas: Canvas) {
         val bounds: Rect = bounds
