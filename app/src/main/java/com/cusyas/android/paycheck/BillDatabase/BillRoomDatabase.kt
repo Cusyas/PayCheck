@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 import kotlinx.coroutines.CoroutineScope
 
 @Database(entities = arrayOf(Bill::class), version = 3, exportSchema = false)
-public abstract class BillRoomDatabase : RoomDatabase() {
+abstract class BillRoomDatabase : RoomDatabase() {
 
     abstract fun billDao(): BillDao
 

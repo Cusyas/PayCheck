@@ -13,4 +13,6 @@
     <string name="bill_amount_due">Amount Due:&#160;</string>
     <string name="bill_total_amount_due">Total Amount Due:&#160;</string>
     <string name="bill_spinner_text">Bill Due On The:</string>
+    <string name="bill_id">billId</string>
+    <string name="total_amount_due_view">Total Amount Due:</string>
 </resources>

@@ -22,7 +22,7 @@ interface BillDao {
     suspend fun updateBill(bill: Bill)
 
     @Transaction
-    open suspend fun resetAllPaid(){
+    suspend fun resetAllPaid(){
         resetPaid()
         resetPaidMonthAdvance()
     }

@@ -78,10 +78,6 @@ class NewBillActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener 
 
 
 
-        //var editTextFilledExposedDropdown: AutoCompleteTextView = findViewById(R.id.bill_due_date_dropdown)
-        //editTextFilledExposedDropdown.setAdapter(dueDateAdapter)
-
-        var current = ""
         billId = intent.getIntExtra("billId", -1)
         if (billId > -1) {
             billViewModel.loadById(billId).observe(this, Observer {
@@ -96,14 +92,13 @@ class NewBillActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener 
                         switchBillPaidText.text = resources.getText(R.string.switch_not_paid)
                     }
                     editBillNameView.setText(it.bill_name)
-                    var billAmount = it.bill_amount * 10
+                    val billAmount = it.bill_amount * 10
                     var cleanString = billAmount.toString().replace(",", "")
                     cleanString = cleanString.replace(".", "")
 
                     val parsed = cleanString.toDouble()
                     val formatted = NumberFormat.getCurrencyInstance().format(parsed / 100)
 
-                    current = formatted
                     editBillAmount.setText(formatted)
                     // -1 because the index for the spinner starts at 0
                     daySpinner.setSelection(it.bill_due_date - 1)
@@ -137,9 +132,8 @@ class NewBillActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener 
                 cleanString = cleanString.replace(",", "")
                 cleanString = cleanString.replace(".", "")
 
-                var parsed: Double = cleanString.toDouble()
-                var formatted: String = NumberFormat.getCurrencyInstance().format(parsed/100)
-                current = formatted
+                val parsed: Double = cleanString.toDouble()
+                val formatted: String = NumberFormat.getCurrencyInstance().format(parsed/100)
 
                 editBillAmount.setText(formatted)
                 editBillAmount.setSelection(formatted.length)
@@ -156,7 +150,7 @@ class NewBillActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener 
             } else{
                 switchBillPaidText.text = resources.getText(R.string.switch_not_paid)
                 if (billPaidBeforeLoading != null){
-                    if (bill.bill_due_date < Calendar.DAY_OF_MONTH){ supportActionBar?.setBackgroundDrawable(ColorDrawable(RED)) }
+                    if (bill.bill_due_date < Calendar.getInstance().get(Calendar.DAY_OF_MONTH)){ supportActionBar?.setBackgroundDrawable(ColorDrawable(RED)) }
                     else{ supportActionBar?.setBackgroundDrawable(ColorDrawable(YELLOW)) }
                 }
             }
@@ -195,16 +189,14 @@ class NewBillActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener 
             val deleteDialogBuilder = AlertDialog.Builder(this)
             deleteDialogBuilder.setMessage("Are you sure you want to delete this bill?")
                 .setCancelable(false)
-                .setPositiveButton("Cancel", DialogInterface.OnClickListener(){
-                    dialog, which -> dialog.cancel() })
+                .setPositiveButton("Cancel") { dialog, which -> dialog.cancel() }
 
 
-                .setNegativeButton("Delete", DialogInterface.OnClickListener {
-                    dialog, which ->  if (billId != -1) {
+                .setNegativeButton("Delete") { dialog, which ->  if (billId != -1) {
                     billViewModel.deleteBill(bill)
                     startActivity(Intent(this,MainActivity::class.java))
+                    }
                 }
-                })
 
             val alert = deleteDialogBuilder.create()
             alert.setTitle("Confirm Delete")

@@ -47,11 +47,11 @@ class BillListAdapter internal constructor(
         val context = holder.billAmountItemView.context
         holder.billNameItemView.text = bills[position].bill_name
         holder.billDueDateItemView.text = (context.getText(R.string.bill_due_on).toString() + bills[position].bill_due_date.toString())
-        holder.billAmountItemView.text = context.getText(R.string.bill_amount_due).toString() + NumberFormat.getCurrencyInstance().format(bills[position].bill_amount)
+        holder.billAmountItemView.text = context.getString(R.string.bill_amount_due).toString() + NumberFormat.getCurrencyInstance().format(bills[position].bill_amount)
         val daysUntilDuePercentage = BillDueDateDistance.getColorMix(bills[position].bill_due_date)
         // check if the bill is paid, setting the background accordingly
         if (bills[position].bill_paid){
-            if (bills[position].bill_due_date < Calendar.DAY_OF_MONTH){
+            if (bills[position].bill_due_date < Calendar.getInstance().get(Calendar.DAY_OF_MONTH)){
                 val colors: IntArray = intArrayOf(ContextCompat.getColor(context,R.color.billYellow), ContextCompat.getColor(context,R.color.billRed))
                 customDrawable = BillColorBarDrawable(colors,daysUntilDuePercentage)
             }else {
@@ -82,7 +82,7 @@ class BillListAdapter internal constructor(
     private fun onClick(position: Int, v: View) {
 
         val intent = Intent(v.context, NewBillActivity::class.java)
-        intent.putExtra("billId", bills[position].bill_id)
+        intent.putExtra(v.context.getString(R.string.bill_id), bills[position].bill_id)
         v.context.startActivity(intent)
 
     }
