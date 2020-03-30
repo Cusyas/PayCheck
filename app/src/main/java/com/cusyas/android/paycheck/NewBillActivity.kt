@@ -167,6 +167,14 @@ class NewBillActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener 
             }
         }
 
+        switchBillPaidMonthAdvance.setOnCheckedChangeListener { buttonView, isChecked ->
+            if (isChecked){
+                switchBillPaidMonthAdvanceText.setText(resources.getString(R.string.switch_paid_month_advance))
+            } else{
+                switchBillPaidMonthAdvanceText.setText(resources.getString(R.string.switch_not_paid_month_advance))
+            }
+        }
+
         button.setOnClickListener {
             when {
                 editBillNameView.text.isEmpty() -> Toast.makeText(this,"Bill name cannot be empty", Toast.LENGTH_LONG).show()
