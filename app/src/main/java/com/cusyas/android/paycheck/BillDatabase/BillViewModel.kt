@@ -41,7 +41,7 @@ class BillViewModel(application: Application) : AndroidViewModel(application){
 
     fun resetAllPaid(){
         GlobalScope.launch {
-            repository.resetAllPAid()
+            repository.resetAllPaid()
         }
     }
 

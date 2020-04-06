@@ -40,24 +40,32 @@ class MainActivity : AppCompatActivity() {
         billViewModel = ViewModelProvider(this).get(BillViewModel::class.java)
 
         billViewModel.allBills.observe(this, Observer { bills ->
-            bills?.let {
-                adapter.setBills(it)
-                it.forEach {
-                    if (!it.bill_paid){
+            bills?.let { list ->
+                adapter.setBills(list)
+                var payReset: Boolean = false
+                val sharedPref = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
+                val recentPaidMonth = sharedPref.getInt(getString(R.string.most_recent_paid_month_key), -1)
+                val calendarInstance = Calendar.getInstance()
+                if(recentPaidMonth != calendarInstance.get( Calendar.MONTH)){
+                    payReset = true
+                    sharedPref.edit().putInt(getString(R.string.most_recent_paid_month_key), calendarInstance.get(Calendar.MONTH)).apply()
+                }else { payReset = false }
+                list.forEach {
+                    if (payReset && it.bill_paid_month_advance){
+                        it.bill_paid_month_advance = false
+                        it.bill_paid = true
+                        billViewModel.updateBill(it)
+                    }else if (payReset && !it.bill_paid_month_advance){
+                        it.bill_paid = false
+                        billViewModel.updateBill(it)
+                    }
+                    else if (!payReset && !it.bill_paid){
                         totalDue += it.bill_amount
                     }
                 }
                 totalDueTextView.text = resources.getText(R.string.bill_total_amount_due).toString() + ("\n" + NumberFormat.getCurrencyInstance().format(totalDue))
             }
         })
-
-        val sharedPref = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
-        val recentPaidMonth = sharedPref.getInt(getString(R.string.most_recent_paid_month_key), -1)
-        if(recentPaidMonth != Calendar.MONTH){
-            billViewModel.resetAllPaid()
-            sharedPref.edit().putInt(getString(R.string.most_recent_paid_month_key), Calendar.MONTH).commit()
-        }
-
 
 
         val fab = findViewById<FloatingActionButton>(R.id.fab)
@@ -79,5 +87,10 @@ class MainActivity : AppCompatActivity() {
                 R.string.empty_not_saved,
                 Toast.LENGTH_LONG).show()
         }
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        finishAffinity()
     }
 }

@@ -1,9 +1,9 @@
 package com.cusyas.android.paycheck
 
-import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Color.*
 import android.graphics.drawable.ColorDrawable
+import android.opengl.Visibility
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
@@ -17,6 +17,8 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.cusyas.android.paycheck.BillDatabase.Bill
 import com.cusyas.android.paycheck.BillDatabase.BillViewModel
+import com.google.android.material.switchmaterial.SwitchMaterial
+import com.google.android.material.textfield.TextInputLayout
 import kotlinx.android.synthetic.main.activity_new_bill.*
 import java.text.NumberFormat
 import java.util.*
@@ -28,7 +30,13 @@ class NewBillActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener 
     private lateinit var daySpinner: Spinner
     private lateinit var billViewModel: BillViewModel
     private lateinit var editBillAmount: EditText
-    private lateinit var switchBillPaid: Switch
+    private lateinit var switchBillPaid: SwitchMaterial
+    private lateinit var switchBillPaidText: TextView
+
+    private lateinit var switchBillPaidMonthAdvance: SwitchMaterial
+    private lateinit var switchBillPaidMonthAdvanceText: TextView
+
+    private var billPaidBeforeLoading: Boolean? = null
 
     private lateinit var bill: Bill
 
@@ -54,40 +62,49 @@ class NewBillActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener 
         setContentView(R.layout.activity_new_bill)
         setSupportActionBar(findViewById(R.id.tb_bill_edit))
 
+        var filler: TextInputLayout = findViewById(R.id.edit_bill_amount)
+        editBillAmount = filler.editText!!
 
-
-
+        switchBillPaidText = findViewById(R.id.switchBillPaidTextView)
+        switchBillPaidMonthAdvanceText = findViewById(R.id.switchMonthAdvanceTextView)
 
         val button = findViewById<Button>(R.id.button_save)
-        editBillAmount = findViewById(R.id.edit_bill_amount)
-        editBillNameView = findViewById(R.id.edit_bill_name)
+
+
+        filler = findViewById(R.id.edit_bill_name)
+        editBillNameView = filler.editText!!
+
         daySpinner = findViewById(R.id.spinner_days)
+
         switchBillPaid = findViewById(R.id.sw_bill_paid)
+        switchBillPaidMonthAdvance = findViewById(R.id.sw_bill_paid_month_advance)
 
         billViewModel = ViewModelProvider(this).get(billViewModel::class.java)
 
-        var current = ""
+
+
         billId = intent.getIntExtra("billId", -1)
         if (billId > -1) {
             billViewModel.loadById(billId).observe(this, Observer {
                 if(it != null) {
+                    billPaidBeforeLoading = it.bill_paid
                     bill = it
-                    if (it.bill_paid){
-                        switchBillPaid.isChecked = true
-                        switchBillPaid.text = resources.getText(R.string.switch_paid)
-                    } else{
-                        switchBillPaid.isChecked = false
-                        switchBillPaid.text = resources.getText(R.string.switch_not_paid)
+
+                    switchBillPaid.isChecked = it.bill_paid
+                    switchBillPaidMonthAdvance.isChecked = it.bill_paid_month_advance
+                    if (!it.bill_paid){
+                        switchBillPaidMonthAdvance.visibility = View.INVISIBLE
+                        switchBillPaidMonthAdvanceText.visibility = View.INVISIBLE
                     }
+
                     editBillNameView.setText(it.bill_name)
-                    var billAmount = it.bill_amount * 10
+                    val billAmount = it.bill_amount * 10
                     var cleanString = billAmount.toString().replace(",", "")
                     cleanString = cleanString.replace(".", "")
 
                     val parsed = cleanString.toDouble()
                     val formatted = NumberFormat.getCurrencyInstance().format(parsed / 100)
 
-                    current = formatted
                     editBillAmount.setText(formatted)
                     // -1 because the index for the spinner starts at 0
                     daySpinner.setSelection(it.bill_due_date - 1)
@@ -114,64 +131,70 @@ class NewBillActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
 
             }
-
+            var textCurrent = ""
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                var formatted = ""
-                if (!s.toString().isNullOrEmpty()){
-                    var cleanString = s.toString().replace(",", "")
-                    cleanString = cleanString.replace("\$", "")
-                    cleanString = cleanString.replace(".", "")
+                editBillAmount.removeTextChangedListener(this)
+                var cleanString: String = s.toString().replace("\$","")
+                cleanString = cleanString.replace(",", "")
+                cleanString = cleanString.replace(".", "")
 
-                    val parsed = cleanString.toDouble()
-                    formatted = NumberFormat.getCurrencyInstance().format(parsed/100)
-                }
-                if (formatted != current){
+                val parsed: Double = cleanString.toDouble()
+                val formatted: String = NumberFormat.getCurrencyInstance().format(parsed/100)
 
-                    editBillAmount.removeTextChangedListener(this)
+                editBillAmount.setText(formatted)
+                editBillAmount.setSelection(formatted.length)
 
-                    var cleanString = s.toString().replace("\$", "")
-                    cleanString = cleanString.replace(",", "")
-                    cleanString = cleanString.replace(".", "")
+                editBillAmount.addTextChangedListener(this)
 
-                    val parsed = cleanString.toDouble()
-                    val formatted = NumberFormat.getCurrencyInstance().format(parsed/100)
-
-                    current = formatted
-                    editBillAmount.setText(formatted)
-                    editBillAmount.setSelection(formatted.length)
-
-                    editBillAmount.addTextChangedListener(this)
-                }
             }
         })
 
         switchBillPaid.setOnCheckedChangeListener { buttonView, isChecked ->
             if (isChecked){
-                buttonView.text = resources.getText(R.string.switch_paid)
+                switchBillPaidText.text = resources.getText(R.string.switch_paid)
+                if (billPaidBeforeLoading != null) { supportActionBar?.setBackgroundDrawable(ColorDrawable(GREEN)) }
+                switchBillPaidMonthAdvance.visibility = View.VISIBLE
+                switchBillPaidMonthAdvanceText.visibility = View.VISIBLE
             } else{
-                buttonView.text = resources.getText(R.string.switch_not_paid)
+                switchBillPaidText.text = resources.getText(R.string.switch_not_paid)
+                switchBillPaidMonthAdvance.isChecked = false
+                switchBillPaidMonthAdvance.visibility = View.INVISIBLE
+                switchBillPaidMonthAdvanceText.visibility = View.INVISIBLE
+                if (billPaidBeforeLoading != null){
+                    if (bill.bill_due_date < Calendar.getInstance().get(Calendar.DAY_OF_MONTH)){ supportActionBar?.setBackgroundDrawable(ColorDrawable(RED)) }
+                    else{ supportActionBar?.setBackgroundDrawable(ColorDrawable(YELLOW)) }
+                }
+            }
+        }
+
+        switchBillPaidMonthAdvance.setOnCheckedChangeListener { buttonView, isChecked ->
+            if (isChecked){
+                switchBillPaidMonthAdvanceText.setText(resources.getString(R.string.switch_paid_month_advance))
+            } else{
+                switchBillPaidMonthAdvanceText.setText(resources.getString(R.string.switch_not_paid_month_advance))
             }
         }
 
         button.setOnClickListener {
-            if (editBillNameView.text.isEmpty()){
-                Toast.makeText(this,"Bill name cannot be empty", Toast.LENGTH_LONG).show()
-            }
-            else{
-                var billAmount = editBillAmount.text.toString()
-                billAmount = billAmount.replace("\$", "")
-                billAmount = billAmount.replace(",", "")
+            when {
+                editBillNameView.text.isEmpty() -> Toast.makeText(this,"Bill name cannot be empty", Toast.LENGTH_LONG).show()
+                editBillAmount.text.isEmpty() -> Toast.makeText(this,"Bill amount cannot be empty", Toast.LENGTH_LONG).show()
+                else -> {
+                    var billAmount = editBillAmount.text.toString()
+                    billAmount = billAmount.replace("\$", "")
+                    billAmount = billAmount.replace(",", "")
 
-                // +1 is added to the daySpinner because the index starts at 0 but the spinner is for the due date
-                bill = Bill(edit_bill_name.text.toString(), billAmount.toDouble(), daySpinner.selectedItemPosition+1, switchBillPaid.isChecked)
-                if (billId == -1){
-                    billViewModel.insert(bill)
-                } else{
-                    bill.bill_id = billId
-                    billViewModel.updateBill(bill)
+                    // +1 is added to the daySpinner because the index starts at 0 but the spinner is for the due date
+                    bill = Bill(edit_bill_name.editText?.text.toString(), billAmount.toDouble(), daySpinner.selectedItemPosition+1, switchBillPaid.isChecked, switchBillPaidMonthAdvance.isChecked)
+                    if (billId == -1){
+                        billViewModel.insert(bill)
+                    } else{
+                        bill.bill_id = billId
+                        billViewModel.updateBill(bill)
+                    }
+                    val intent = Intent(this, MainActivity::class.java)
+                    startActivity(intent)
                 }
-                val intent = Intent(this, MainActivity::class.java)
-                startActivity(intent)
             }
         }
 
@@ -185,16 +208,14 @@ class NewBillActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener 
             val deleteDialogBuilder = AlertDialog.Builder(this)
             deleteDialogBuilder.setMessage("Are you sure you want to delete this bill?")
                 .setCancelable(false)
-                .setPositiveButton("Cancel", DialogInterface.OnClickListener(){
-                    dialog, which -> dialog.cancel() })
+                .setPositiveButton("Cancel") { dialog, which -> dialog.cancel() }
 
 
-                .setNegativeButton("Delete", DialogInterface.OnClickListener {
-                    dialog, which ->  if (billId != -1) {
+                .setNegativeButton("Delete") { dialog, which ->  if (billId != -1) {
                     billViewModel.deleteBill(bill)
                     startActivity(Intent(this,MainActivity::class.java))
+                    }
                 }
-                })
 
             val alert = deleteDialogBuilder.create()
             alert.setTitle("Confirm Delete")
