@@ -78,12 +78,8 @@ class NewBillActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener 
                     }
 
                     binding.editBillName.editText!!.setText(it.bill_name)
-                    //val billAmount = it.bill_amount * 10
-                    var cleanString = it.bill_amount.toString().replace(",", "")
-                    cleanString = cleanString.replace(".", "")
 
-                    val parsed = cleanString.toDouble()
-                    val formatted = NumberFormat.getCurrencyInstance().format(parsed / 100)
+                    val formatted = NumberFormat.getCurrencyInstance().format(it.bill_amount)
 
                     binding.editBillAmount.editText!!.setText(formatted)
                     // -1 because the index for the spinner starts at 0
