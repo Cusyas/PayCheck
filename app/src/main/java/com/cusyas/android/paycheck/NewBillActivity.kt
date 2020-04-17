@@ -3,7 +3,6 @@ package com.cusyas.android.paycheck
 import android.content.Intent
 import android.graphics.Color.*
 import android.graphics.drawable.ColorDrawable
-import android.opengl.Visibility
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
@@ -17,6 +16,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.cusyas.android.paycheck.BillDatabase.Bill
 import com.cusyas.android.paycheck.BillDatabase.BillViewModel
+import com.cusyas.android.paycheck.databinding.ActivityNewBillBinding
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.android.material.textfield.TextInputLayout
 import kotlinx.android.synthetic.main.activity_new_bill.*
@@ -26,15 +26,9 @@ import java.util.*
 
 class NewBillActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
 
-    private lateinit var editBillNameView: EditText
-    private lateinit var daySpinner: Spinner
-    private lateinit var billViewModel: BillViewModel
-    private lateinit var editBillAmount: EditText
-    private lateinit var switchBillPaid: SwitchMaterial
-    private lateinit var switchBillPaidText: TextView
+    private lateinit var binding: ActivityNewBillBinding
 
-    private lateinit var switchBillPaidMonthAdvance: SwitchMaterial
-    private lateinit var switchBillPaidMonthAdvanceText: TextView
+    private lateinit var billViewModel: BillViewModel
 
     private var billPaidBeforeLoading: Boolean? = null
 
@@ -57,31 +51,16 @@ class NewBillActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener 
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        billViewModel = ViewModelProvider(this).get(BillViewModel::class.java)
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_new_bill)
+        binding = ActivityNewBillBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
+
+        billViewModel = ViewModelProvider(this).get(BillViewModel::class.java)
+
         setSupportActionBar(findViewById(R.id.tb_bill_edit))
 
-        var filler: TextInputLayout = findViewById(R.id.edit_bill_amount)
-        editBillAmount = filler.editText!!
-
-        switchBillPaidText = findViewById(R.id.switchBillPaidTextView)
-        switchBillPaidMonthAdvanceText = findViewById(R.id.switchMonthAdvanceTextView)
-
-        val button = findViewById<Button>(R.id.button_save)
-
-
-        filler = findViewById(R.id.edit_bill_name)
-        editBillNameView = filler.editText!!
-
-        daySpinner = findViewById(R.id.spinner_days)
-
-        switchBillPaid = findViewById(R.id.sw_bill_paid)
-        switchBillPaidMonthAdvance = findViewById(R.id.sw_bill_paid_month_advance)
-
         billViewModel = ViewModelProvider(this).get(billViewModel::class.java)
-
-
 
         billId = intent.getIntExtra("billId", -1)
         if (billId > -1) {
@@ -90,24 +69,21 @@ class NewBillActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener 
                     billPaidBeforeLoading = it.bill_paid
                     bill = it
 
-                    switchBillPaid.isChecked = it.bill_paid
-                    switchBillPaidMonthAdvance.isChecked = it.bill_paid_month_advance
+                    binding.swBillPaid.isChecked = it.bill_paid
+
+                    binding.swBillPaidMonthAdvance.isChecked = it.bill_paid_month_advance
                     if (!it.bill_paid){
-                        switchBillPaidMonthAdvance.visibility = View.INVISIBLE
-                        switchBillPaidMonthAdvanceText.visibility = View.INVISIBLE
+                        binding.swBillPaidMonthAdvance.visibility = View.INVISIBLE
+                        binding.switchMonthAdvanceTextView.visibility = View.INVISIBLE
                     }
 
-                    editBillNameView.setText(it.bill_name)
-                    val billAmount = it.bill_amount * 10
-                    var cleanString = billAmount.toString().replace(",", "")
-                    cleanString = cleanString.replace(".", "")
+                    binding.editBillName.editText!!.setText(it.bill_name)
 
-                    val parsed = cleanString.toDouble()
-                    val formatted = NumberFormat.getCurrencyInstance().format(parsed / 100)
+                    val formatted = NumberFormat.getCurrencyInstance().format(it.bill_amount)
 
-                    editBillAmount.setText(formatted)
+                    binding.editBillAmount.editText!!.setText(formatted)
                     // -1 because the index for the spinner starts at 0
-                    daySpinner.setSelection(it.bill_due_date - 1)
+                    binding.spinnerDays.setSelection(it.bill_due_date - 1)
                     // check if the bill is paid, setting the background accordingly
                     if (bill.bill_paid){
                         supportActionBar?.setBackgroundDrawable(ColorDrawable(GREEN))
@@ -123,7 +99,7 @@ class NewBillActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener 
             })
         }
 
-        editBillAmount.addTextChangedListener(object: TextWatcher{
+        binding.editBillAmount.editText!!.addTextChangedListener(object: TextWatcher{
             override fun afterTextChanged(s: Editable?) {
 
             }
@@ -133,7 +109,7 @@ class NewBillActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener 
             }
             var textCurrent = ""
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                editBillAmount.removeTextChangedListener(this)
+                binding.editBillAmount.editText!!.removeTextChangedListener(this)
                 var cleanString: String = s.toString().replace("\$","")
                 cleanString = cleanString.replace(",", "")
                 cleanString = cleanString.replace(".", "")
@@ -141,25 +117,24 @@ class NewBillActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener 
                 val parsed: Double = cleanString.toDouble()
                 val formatted: String = NumberFormat.getCurrencyInstance().format(parsed/100)
 
-                editBillAmount.setText(formatted)
-                editBillAmount.setSelection(formatted.length)
+                binding.editBillAmount.editText!!.setText(formatted)
+                binding.editBillAmount.editText!!.setSelection(formatted.length)
 
-                editBillAmount.addTextChangedListener(this)
-
+                binding.editBillAmount.editText!!.addTextChangedListener(this)
             }
         })
 
-        switchBillPaid.setOnCheckedChangeListener { buttonView, isChecked ->
+        binding.swBillPaid.setOnCheckedChangeListener { buttonView, isChecked ->
             if (isChecked){
-                switchBillPaidText.text = resources.getText(R.string.switch_paid)
+                binding.switchBillPaidTextView.text = resources.getText(R.string.switch_paid)
                 if (billPaidBeforeLoading != null) { supportActionBar?.setBackgroundDrawable(ColorDrawable(GREEN)) }
-                switchBillPaidMonthAdvance.visibility = View.VISIBLE
-                switchBillPaidMonthAdvanceText.visibility = View.VISIBLE
+                binding.swBillPaidMonthAdvance.visibility = View.VISIBLE
+                binding.switchMonthAdvanceTextView.visibility = View.VISIBLE
             } else{
-                switchBillPaidText.text = resources.getText(R.string.switch_not_paid)
-                switchBillPaidMonthAdvance.isChecked = false
-                switchBillPaidMonthAdvance.visibility = View.INVISIBLE
-                switchBillPaidMonthAdvanceText.visibility = View.INVISIBLE
+                binding.switchBillPaidTextView.text = resources.getText(R.string.switch_not_paid)
+                binding.swBillPaidMonthAdvance.isChecked = false
+                binding.swBillPaidMonthAdvance.visibility = View.INVISIBLE
+                binding.switchMonthAdvanceTextView.visibility = View.INVISIBLE
                 if (billPaidBeforeLoading != null){
                     if (bill.bill_due_date < Calendar.getInstance().get(Calendar.DAY_OF_MONTH)){ supportActionBar?.setBackgroundDrawable(ColorDrawable(RED)) }
                     else{ supportActionBar?.setBackgroundDrawable(ColorDrawable(YELLOW)) }
@@ -167,25 +142,25 @@ class NewBillActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener 
             }
         }
 
-        switchBillPaidMonthAdvance.setOnCheckedChangeListener { buttonView, isChecked ->
+        binding.swBillPaidMonthAdvance.setOnCheckedChangeListener { buttonView, isChecked ->
             if (isChecked){
-                switchBillPaidMonthAdvanceText.setText(resources.getString(R.string.switch_paid_month_advance))
+                binding.switchMonthAdvanceTextView.setText(resources.getString(R.string.switch_paid_month_advance))
             } else{
-                switchBillPaidMonthAdvanceText.setText(resources.getString(R.string.switch_not_paid_month_advance))
+                binding.switchMonthAdvanceTextView.setText(resources.getString(R.string.switch_not_paid_month_advance))
             }
         }
 
-        button.setOnClickListener {
+        binding.buttonSave.setOnClickListener {
             when {
-                editBillNameView.text.isEmpty() -> Toast.makeText(this,"Bill name cannot be empty", Toast.LENGTH_LONG).show()
-                editBillAmount.text.isEmpty() -> Toast.makeText(this,"Bill amount cannot be empty", Toast.LENGTH_LONG).show()
+                binding.editBillName.editText!!.text.isEmpty() -> Toast.makeText(this,"Bill name cannot be empty", Toast.LENGTH_LONG).show()
+                binding.editBillAmount.editText!!.text.isEmpty() -> Toast.makeText(this,"Bill amount cannot be empty", Toast.LENGTH_LONG).show()
                 else -> {
-                    var billAmount = editBillAmount.text.toString()
+                    var billAmount = binding.editBillAmount.editText!!.text.toString()
                     billAmount = billAmount.replace("\$", "")
                     billAmount = billAmount.replace(",", "")
-
+                    val amount = billAmount.toDouble()
                     // +1 is added to the daySpinner because the index starts at 0 but the spinner is for the due date
-                    bill = Bill(edit_bill_name.editText?.text.toString(), billAmount.toDouble(), daySpinner.selectedItemPosition+1, switchBillPaid.isChecked, switchBillPaidMonthAdvance.isChecked)
+                    bill = Bill(edit_bill_name.editText?.text.toString(), amount, binding.spinnerDays.selectedItemPosition+1, binding.swBillPaid.isChecked, binding.swBillPaidMonthAdvance.isChecked)
                     if (billId == -1){
                         billViewModel.insert(bill)
                     } else{
@@ -199,8 +174,8 @@ class NewBillActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener 
         }
 
         // moving the cursor to the end of the name
-        editBillNameView.requestFocus()
-        editBillNameView.setSelection(editBillNameView.text.length)
+        binding.editBillName.editText!!.requestFocus()
+        binding.editBillName.editText!!.setSelection(binding.editBillName.editText!!.text.length)
     }
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId){
