@@ -1,4 +1,4 @@
-package com.cusyas.android.paycheck.BillDatabase
+package com.cusyas.android.paycheck.billDatabase
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
@@ -14,13 +14,17 @@ class BillViewModel(application: Application) : AndroidViewModel(application){
     val allBills: LiveData<List<Bill>>
 
     init {
-        val billsDao = BillRoomDatabase.getDatabase(application, viewModelScope).billDao()
+        val billsDao = BillRoomDatabase.getDatabase(application).billDao()
         repository = BillRepository(billsDao)
         allBills = repository.allBills
     }
 
     fun insert(bill: Bill) = viewModelScope.launch {
         repository.insert(bill)
+    }
+
+    fun getUnpaidBills():List<Bill>{
+        return repository.getUnpaidBills()
     }
 
     fun loadById(billId: Int):LiveData<Bill>{

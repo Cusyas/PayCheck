@@ -2,7 +2,6 @@ package com.cusyas.android.paycheck
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.graphics.Color.*
 import android.graphics.drawable.*
 import android.view.LayoutInflater
@@ -11,8 +10,8 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.cusyas.android.paycheck.BillDatabase.Bill
-import com.cusyas.android.paycheck.Utils.BillDueDateDistance
+import com.cusyas.android.paycheck.billDatabase.Bill
+import com.cusyas.android.paycheck.utils.BillDueDateDistance
 import java.text.NumberFormat
 import java.util.*
 
