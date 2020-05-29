@@ -29,4 +29,5 @@
     <!-- Bills Preferences -->
     <string name="bill_notification_title">Notification for due bills</string>
     <string name="bills_notification_distance_title">When to send notification</string>
+    <string name="reset_settings">Reset Settings</string>
 </resources>

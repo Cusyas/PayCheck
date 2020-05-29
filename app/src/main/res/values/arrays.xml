@@ -6,7 +6,7 @@
         <item>Day before bill is due and day due</item>
     </string-array>
 
-    <string-array name="reply_values">
+    <string-array name="bill_notification_distance_values">
         <item>day_due</item>
         <item>day_before_due</item>
         <item>day_before_and_day_due</item>

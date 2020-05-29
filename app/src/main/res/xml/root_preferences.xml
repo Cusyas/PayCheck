@@ -10,13 +10,14 @@
             app:useSimpleSummaryProvider="true" />
 
         <ListPreference
-            app:defaultValue="reply"
+            app:defaultValue="day_due"
             app:iconSpaceReserved="false"
             app:entries="@array/bill_notification_distance_entries"
-            app:entryValues="@array/reply_values"
+            app:entryValues="@array/bill_notification_distance_values"
             app:key="bills_notification_distance"
             app:title="@string/bills_notification_distance_title"
-            app:useSimpleSummaryProvider="true" />
+            app:useSimpleSummaryProvider="true"
+            app:isPreferenceVisible="false"/>
 
     </PreferenceCategory>
 
