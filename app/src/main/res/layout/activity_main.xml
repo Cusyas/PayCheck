@@ -8,6 +8,8 @@
     tools:context=".MainActivity"
     android:background="@android:color/darker_gray">
 
+
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerview"
         android:layout_width="match_parent"
