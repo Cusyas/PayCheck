@@ -1,4 +1,4 @@
-package com.cusyas.android.paycheck.Utils
+package com.cusyas.android.paycheck.utils
 
 import android.os.Build
 import java.time.YearMonth

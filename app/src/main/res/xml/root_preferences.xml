@@ -1,0 +1,24 @@
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory app:title="@string/bills_header">
+
+        <SwitchPreferenceCompat
+            app:key="bills_notification"
+            app:iconSpaceReserved="false"
+            app:title="@string/bill_notification_title"
+            app:useSimpleSummaryProvider="true" />
+
+        <ListPreference
+            app:defaultValue="day_due"
+            app:iconSpaceReserved="false"
+            app:entries="@array/bill_notification_distance_entries"
+            app:entryValues="@array/bill_notification_distance_values"
+            app:key="bills_notification_distance"
+            app:title="@string/bills_notification_distance_title"
+            app:useSimpleSummaryProvider="true"
+            app:isPreferenceVisible="false"/>
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

@@ -5,14 +5,16 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.AdapterView
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.TextView
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.cusyas.android.paycheck.BillDatabase.BillViewModel
+import com.cusyas.android.paycheck.billDatabase.BillViewModel
+import com.cusyas.android.paycheck.settings.SettingsActivity
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.text.NumberFormat
 import java.util.*
@@ -24,6 +26,11 @@ class MainActivity : AppCompatActivity() {
 
     private val newBillActivityRequestCode = 1
     private var totalDue: Double = 0.0
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_main, menu)
+        return true
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -86,6 +93,16 @@ class MainActivity : AppCompatActivity() {
                 applicationContext,
                 R.string.empty_not_saved,
                 Toast.LENGTH_LONG).show()
+        }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId){
+            R.id.menu_settings -> {
+                startActivity(Intent(this, SettingsActivity::class.java))
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
         }
     }
 

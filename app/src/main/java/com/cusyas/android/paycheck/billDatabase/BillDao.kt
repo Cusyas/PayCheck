@@ -1,4 +1,4 @@
-package com.cusyas.android.paycheck.BillDatabase
+package com.cusyas.android.paycheck.billDatabase
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
@@ -8,6 +8,9 @@ interface BillDao {
 
     @Query("SELECT * FROM bill_table ORDER BY bill_name ASC")
     fun getAlphabetizedBills(): LiveData<List<Bill>>
+
+    @Query("SELECT * FROM bill_table WHERE bill_paid = 0")
+    fun getUnpaidBills(): List<Bill>
 
     @Query("SELECT * FROM bill_table WHERE bill_id IN (:billIds)")
     fun loadAllByIds(billIds: IntArray): LiveData<List<Bill>>

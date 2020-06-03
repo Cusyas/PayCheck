@@ -1,10 +1,9 @@
-package com.cusyas.android.paycheck.BillDatabase
+package com.cusyas.android.paycheck.billDatabase
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import kotlinx.coroutines.CoroutineScope
 
 @Database(entities = arrayOf(Bill::class), version = 3, exportSchema = false)
 abstract class BillRoomDatabase : RoomDatabase() {
@@ -15,7 +14,7 @@ abstract class BillRoomDatabase : RoomDatabase() {
         @Volatile
         private var INSTANCE: BillRoomDatabase? = null
 
-        fun getDatabase(context: Context, scope: CoroutineScope): BillRoomDatabase{
+        fun getDatabase(context: Context): BillRoomDatabase{
             val tempInstance = INSTANCE
             if (tempInstance != null){
                 return tempInstance

@@ -14,11 +14,9 @@ import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.cusyas.android.paycheck.BillDatabase.Bill
-import com.cusyas.android.paycheck.BillDatabase.BillViewModel
+import com.cusyas.android.paycheck.billDatabase.Bill
+import com.cusyas.android.paycheck.billDatabase.BillViewModel
 import com.cusyas.android.paycheck.databinding.ActivityNewBillBinding
-import com.google.android.material.switchmaterial.SwitchMaterial
-import com.google.android.material.textfield.TextInputLayout
 import kotlinx.android.synthetic.main.activity_new_bill.*
 import java.text.NumberFormat
 import java.util.*
@@ -56,11 +54,9 @@ class NewBillActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener 
         val view = binding.root
         setContentView(view)
 
-        billViewModel = ViewModelProvider(this).get(BillViewModel::class.java)
-
         setSupportActionBar(findViewById(R.id.tb_bill_edit))
 
-        billViewModel = ViewModelProvider(this).get(billViewModel::class.java)
+        billViewModel = ViewModelProvider(this).get(BillViewModel::class.java)
 
         billId = intent.getIntExtra("billId", -1)
         if (billId > -1) {
