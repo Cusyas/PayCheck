@@ -196,6 +196,5 @@ class NewBillActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener 
         else -> {
             super.onOptionsItemSelected(item)
         }
-
     }
 }

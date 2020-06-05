@@ -30,4 +30,7 @@
     <string name="bill_notification_title">Notification for due bills</string>
     <string name="bills_notification_distance_title">When to send notification</string>
     <string name="reset_settings">Reset Settings</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
