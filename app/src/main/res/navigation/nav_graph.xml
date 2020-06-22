@@ -25,8 +25,7 @@
         <action
             android:id="@+id/action_newBillFragment_to_billListFragment"
             app:destination="@id/billListFragment"
-            app:popUpTo="@+id/billListFragment"
-            app:popUpToInclusive="true"/>
+            />
 
     </fragment>
     <fragment

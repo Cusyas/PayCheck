@@ -1,5 +1,6 @@
 package com.cusyas.android.paycheck.fragments
 
+import android.app.Activity
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -8,19 +9,20 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.*
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
+import android.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation.findNavController
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment.findNavController
 import androidx.navigation.fragment.findNavController
 import com.cusyas.android.paycheck.MainActivity
 import com.cusyas.android.paycheck.R
 import com.cusyas.android.paycheck.billDatabase.Bill
 import com.cusyas.android.paycheck.billDatabase.BillViewModel
-import com.cusyas.android.paycheck.databinding.ActivityNewBillBinding
 import com.cusyas.android.paycheck.databinding.FragmentBillViewBinding
-import com.cusyas.android.paycheck.databinding.FragmentNewBillBinding
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.android.synthetic.main.activity_new_bill.*
 import java.text.NumberFormat
 import java.util.*
@@ -32,21 +34,23 @@ class BillNewFragment : Fragment() {
 
     private lateinit var bill: Bill
     private lateinit var billViewModel: BillViewModel
+    private lateinit var buttonSave: ExtendedFloatingActionButton
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-
         return inflater.inflate(R.layout.fragment_new_bill, container, false)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        var binding = FragmentBillViewBinding.inflate(layoutInflater)
-        val view = binding.root
-        activity?.setContentView(view)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        buttonSave = requireActivity().findViewById(R.id.button_save)
+        val binding = FragmentBillViewBinding.bind(view)
+
+        //activity?.setContentView(view)
         //setHasOptionsMenu(true)
 
         billViewModel = ViewModelProvider(this).get(BillViewModel::class.java)
@@ -99,7 +103,7 @@ class BillNewFragment : Fragment() {
             }
         }
 
-        binding.buttonSave.setOnClickListener {
+        buttonSave.setOnClickListener {
             when {
                 binding.editBillName.editText!!.text.isEmpty() -> Toast.makeText(activity?.applicationContext ,"Bill name cannot be empty", Toast.LENGTH_LONG).show()
                 binding.editBillAmount.editText!!.text.isEmpty() -> Toast.makeText(activity?.applicationContext ,"Bill amount cannot be empty", Toast.LENGTH_LONG).show()
@@ -121,15 +125,17 @@ class BillNewFragment : Fragment() {
         // moving the cursor to the end of the name
         binding.editBillName.editText!!.requestFocus()
         binding.editBillName.editText!!.setSelection(binding.editBillName.editText!!.text.length)
+
+        setHasOptionsMenu(true)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        activity?.menuInflater?.inflate(R.menu.menu_edit_bill, menu)
+        inflater.inflate(R.menu.menu_edit_bill, menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId){
         R.id.action_delete_bill -> {
-            val deleteDialogBuilder = AlertDialog.Builder(requireActivity().applicationContext)
+            val deleteDialogBuilder = AlertDialog.Builder(context)
             deleteDialogBuilder.setMessage("Are you sure you want to delete this bill?")
                 .setCancelable(false)
                 .setPositiveButton("Cancel") { dialog, which -> dialog.cancel() }

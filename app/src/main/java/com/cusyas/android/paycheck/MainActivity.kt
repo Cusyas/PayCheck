@@ -21,8 +21,6 @@ import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
-
-
     private val newBillActivityRequestCode = 1
 
 
