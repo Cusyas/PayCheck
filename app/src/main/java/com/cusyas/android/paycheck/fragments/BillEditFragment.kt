@@ -10,6 +10,7 @@ import android.view.*
 import androidx.fragment.app.Fragment
 import android.widget.Toast
 import android.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -170,6 +171,7 @@ class BillEditFragment : Fragment() {
         binding.editBillName.editText!!.setSelection(binding.editBillName.editText!!.text.length)
 
         setHasOptionsMenu(true)
+        (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
 
@@ -191,6 +193,7 @@ class BillEditFragment : Fragment() {
             alert.show()
             true
         }
+        android.R.id.home -> findNavController().navigateUp()
         else -> {
             super.onOptionsItemSelected(item)
         }

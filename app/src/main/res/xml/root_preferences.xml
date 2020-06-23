@@ -1,7 +1,8 @@
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <PreferenceCategory app:title="@string/bills_header">
+    <PreferenceCategory app:title="@string/bills_header"
+        app:iconSpaceReserved="false">
 
         <SwitchPreferenceCompat
             app:key="bills_notification"
@@ -17,6 +18,12 @@
             app:key="bills_notification_distance"
             app:title="@string/bills_notification_distance_title"
             app:useSimpleSummaryProvider="true"
+            app:isPreferenceVisible="false"/>
+
+        <Preference
+            android:key="prefTimePicker"
+            app:title="@string/bill_notification_time_title"
+            app:iconSpaceReserved="false"
             app:isPreferenceVisible="false"/>
 
     </PreferenceCategory>

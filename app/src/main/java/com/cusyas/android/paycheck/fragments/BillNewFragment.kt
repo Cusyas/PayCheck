@@ -10,6 +10,8 @@ import android.text.TextWatcher
 import android.view.*
 import android.widget.Toast
 import android.app.AlertDialog
+import android.app.AlertDialog.THEME_DEVICE_DEFAULT_DARK
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation.findNavController
@@ -127,6 +129,7 @@ class BillNewFragment : Fragment() {
         binding.editBillName.editText!!.setSelection(binding.editBillName.editText!!.text.length)
 
         setHasOptionsMenu(true)
+        (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -146,6 +149,7 @@ class BillNewFragment : Fragment() {
             alert.show()
             true
         }
+        android.R.id.home -> findNavController().navigateUp()
         else -> {
             super.onOptionsItemSelected(item)
         }
