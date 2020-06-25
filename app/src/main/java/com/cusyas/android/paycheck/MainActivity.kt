@@ -1,8 +1,13 @@
 package com.cusyas.android.paycheck
 
 import android.app.Activity
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
@@ -13,19 +18,21 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
 import com.cusyas.android.paycheck.billDatabase.BillViewModel
 import com.cusyas.android.paycheck.settings.SettingsActivity
+import com.cusyas.android.paycheck.utils.BillDueDateDistance
+import com.cusyas.android.paycheck.utils.NotificationWorker
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.text.NumberFormat
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var billViewModel: BillViewModel
-    private lateinit var totalDueTextView: TextView
-
     private val newBillActivityRequestCode = 1
-    private var totalDue: Double = 0.0
+
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)
@@ -35,51 +42,11 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        setSupportActionBar(findViewById(R.id.tb_bill_list))
+        createNotificationChannel()
 
-
-
-        totalDueTextView = findViewById(R.id.tv_total_due)
-        val recyclerView = findViewById<RecyclerView>(R.id.recyclerview)
-        val adapter = BillListAdapter(this)
-        recyclerView.adapter = adapter
-        recyclerView.layoutManager = LinearLayoutManager(this)
-
-        billViewModel = ViewModelProvider(this).get(BillViewModel::class.java)
-
-        billViewModel.allBills.observe(this, Observer { bills ->
-            bills?.let { list ->
-                adapter.setBills(list)
-                var payReset: Boolean = false
-                val sharedPref = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
-                val recentPaidMonth = sharedPref.getInt(getString(R.string.most_recent_paid_month_key), -1)
-                val calendarInstance = Calendar.getInstance()
-                if(recentPaidMonth != calendarInstance.get( Calendar.MONTH)){
-                    payReset = true
-                    sharedPref.edit().putInt(getString(R.string.most_recent_paid_month_key), calendarInstance.get(Calendar.MONTH)).apply()
-                }else { payReset = false }
-                list.forEach {
-                    if (payReset && it.bill_paid_month_advance){
-                        it.bill_paid_month_advance = false
-                        it.bill_paid = true
-                        billViewModel.updateBill(it)
-                    }else if (payReset && !it.bill_paid_month_advance){
-                        it.bill_paid = false
-                        billViewModel.updateBill(it)
-                    }
-                    else if (!payReset && !it.bill_paid){
-                        totalDue += it.bill_amount
-                    }
-                }
-                totalDueTextView.text = resources.getText(R.string.bill_total_amount_due).toString() + ("\n" + NumberFormat.getCurrencyInstance().format(totalDue))
-            }
-        })
-
-
-        val fab = findViewById<FloatingActionButton>(R.id.fab)
-        fab.setOnClickListener {
-            val intent = Intent(this@MainActivity, NewBillActivity::class.java)
-            startActivityForResult(intent,newBillActivityRequestCode)
-        }
+        val sharedPreferences = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
+        if (!sharedPreferences.getBoolean(getString(R.string.bill_worker_created), false)) billNotificationWorker(sharedPreferences)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -106,8 +73,30 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    override fun onBackPressed() {
-        super.onBackPressed()
-        finishAffinity()
+    private fun createNotificationChannel(){
+        //Creating the NotificationChannel
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            val name = getString(R.string.channel_bill_notification_name)
+            val descriptionText = getString(R.string.channel_bill_notification_description)
+            val importance = NotificationManager.IMPORTANCE_DEFAULT
+            val channel = NotificationChannel("Bill Notification", name, importance).apply {
+                description = descriptionText
+            }
+
+            // Registering the channel
+            val notificationManager: NotificationManager =
+                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
+        }
+    }
+
+    private fun billNotificationWorker(sharedPref: SharedPreferences){
+        val notificationWorkRequest = OneTimeWorkRequestBuilder<NotificationWorker>()
+            .setInitialDelay(BillDueDateDistance.getMinutesForWorker(applicationContext), TimeUnit.MINUTES)
+            .addTag(getString(R.string.worker_bill_notification_tag))
+            .build()
+        WorkManager.getInstance(applicationContext).enqueue(notificationWorkRequest)
+
+        sharedPref.edit().putBoolean(getString(R.string.bill_worker_created), true).apply()
     }
 }

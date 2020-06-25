@@ -1,6 +1,8 @@
 package com.cusyas.android.paycheck.utils
 
+import android.content.Context
 import android.os.Build
+import com.cusyas.android.paycheck.R
 import java.time.YearMonth
 import java.util.*
 
@@ -43,14 +45,47 @@ class BillDueDateDistance {
 
         fun getColorMix(dueDate: Int): Float {
             val daysUntilDue = getDaysUntilDue(dueDate)
-            if (daysUntilDue >= 30) {
+            return if (daysUntilDue >= 30) {
                 //411dp will fill the entire box with whatever the current status color is
-                return 1f
+                1f
             } else if (daysUntilDue == 0) {
-                return .01f
+                .01f
             } else {
-                return daysUntilDue / 30f
+                daysUntilDue / 30f
             }
+        }
+        fun getMinutesForWorker(context:Context): Long{
+            var delay = 0L
+            val sharedPrefs = context.getSharedPreferences(context.getString(R.string.preference_file_key), Context.MODE_PRIVATE)
+            val requiredHour = sharedPrefs.getInt(context.getString(R.string.bill_notification_hour), 8)
+            val requiredMinute = sharedPrefs.getInt(context.getString(R.string.bill_notification_minute), 0)
+
+            val cal = Calendar.getInstance()
+            val currentHour = cal.get(Calendar.HOUR_OF_DAY)
+            val currentMinute = cal.get(Calendar.MINUTE)
+            when {
+                currentHour < requiredHour -> delay += ((requiredHour - currentHour - 1) * 60)
+                currentHour > requiredHour -> delay += (24 - (currentHour - requiredHour  + 1)) * 60
+                currentHour == requiredHour -> {
+                    /* if the hours are the same but the required minutes are AFTER the current
+                    minutes then all that is needed is the difference between the required minutes
+                    and the current minutes
+                    */
+                    if (currentMinute < requiredMinute) return (requiredMinute - currentMinute).toLong()
+                    /* if the hours are the same and the current minute is less then the required
+                    minute then 23 hours will need to pass before the hours can match up where adding
+                    the required minutes will line up the time
+                    ex. if it is 9:30AM and the required time is 9:15AM, the time has already passed
+                    so the notification can't go off until the next day
+                    */
+                    else delay += 23
+                }
+            }
+            when {
+                currentMinute < requiredMinute -> delay += (requiredMinute - currentMinute)
+                currentMinute > requiredMinute -> delay += (60 - (currentMinute - requiredMinute))
+            }
+            return delay
         }
     }
 }

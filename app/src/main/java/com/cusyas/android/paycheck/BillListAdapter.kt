@@ -9,8 +9,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.cusyas.android.paycheck.billDatabase.Bill
+import com.cusyas.android.paycheck.fragments.BillEditFragment
+import com.cusyas.android.paycheck.fragments.BillListFragmentDirections
 import com.cusyas.android.paycheck.utils.BillDueDateDistance
 import java.text.NumberFormat
 import java.util.*
@@ -94,9 +97,9 @@ class BillListAdapter internal constructor(
 
     private fun onClick(position: Int, v: View) {
 
-        val intent = Intent(v.context, NewBillActivity::class.java)
-        intent.putExtra(v.context.getString(R.string.bill_id), bills[position].bill_id)
-        v.context.startActivity(intent)
+        val action = BillListFragmentDirections.actionBillListFragmentToBillEditFragment(bills[position].bill_id)
+        v.findNavController().navigate(action)
+        //intent.putExtra(v.context.getString(R.string.bill_id), bills[position].bill_id)
 
     }
 }

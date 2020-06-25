@@ -1,5 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/nav_graph">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/billListFragment">
 
+    <fragment
+        android:id="@+id/billListFragment"
+        android:name="com.cusyas.android.paycheck.fragments.BillListFragment"
+        android:label="fragment_bill_list"
+        tools:layout="@layout/fragment_bill_list" >
+        <action
+            android:id="@+id/action_billListFragment_to_newBillFragment"
+            app:destination="@id/newBillFragment" />
+        <action
+            android:id="@+id/action_billListFragment_to_billEditFragment"
+            app:destination="@id/billEditFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/newBillFragment"
+        android:name="com.cusyas.android.paycheck.fragments.BillNewFragment"
+        android:label="fragment_new_bill"
+        tools:layout="@layout/fragment_new_bill">
+        <action
+            android:id="@+id/action_newBillFragment_to_billListFragment"
+            app:destination="@id/billListFragment"
+            />
+
+    </fragment>
+    <fragment
+        android:id="@+id/billEditFragment"
+        android:name="com.cusyas.android.paycheck.fragments.BillEditFragment"
+        android:label="fragment_bill_edit"
+        tools:layout="@layout/fragment_bill_edit" >
+        <argument
+            android:name="billId"
+            app:argType="integer"
+            android:defaultValue="-1" />
+        <action
+            android:id="@+id/action_billEditFragment_to_billListFragment"
+            app:destination="@id/billListFragment" />
+    </fragment>
 </navigation>

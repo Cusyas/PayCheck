@@ -1,5 +1,5 @@
 <resources>
-    <!-- Reply Preference -->
+    <!-- Bill Notification Preference -->
     <string-array name="bill_notification_distance_entries">
         <item>Day bill is due</item>
         <item>Day before bill is due</item>

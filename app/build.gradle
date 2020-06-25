@@ -6,6 +6,8 @@ apply plugin: 'kotlin-android-extensions'
 
 apply plugin: 'kotlin-kapt'
 
+apply plugin: "androidx.navigation.safeargs.kotlin"
+
 android {
     viewBinding {
         enabled true
@@ -15,8 +17,8 @@ android {
         applicationId "com.cusyas.android.paycheck"
         minSdkVersion 24
         targetSdkVersion 28
-        versionCode 9
-        versionName "1.09"
+        versionCode 11
+        versionName "1.11"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -24,6 +26,14 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
     }
 }
 
@@ -34,6 +44,8 @@ dependencies {
     def preference_version = "1.1.1"
     def nav_version = "2.3.0-beta01"
 
+    implementation "com.android.support:support-compat:28.0.0"
+
     // Work Manager
     implementation "androidx.work:work-runtime-ktx:$work_version"
 
@@ -41,6 +53,7 @@ dependencies {
     implementation "androidx.room:room-runtime:$rootProject.roomVersion"
     implementation "androidx.room:room-ktx:$rootProject.roomVersion"
     implementation 'androidx.preference:preference:1.1.1'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     kapt "androidx.room:room-compiler:$rootProject.roomVersion"
     androidTestImplementation "androidx.room:room-testing:$rootProject.roomVersion"
 
@@ -62,7 +75,7 @@ dependencies {
     androidTestImplementation "androidx.arch.core:core-testing:$rootProject.coreTestingVersion"
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation("com.android.support:appcompat-v7:28.0.0")
+    implementation('androidx.appcompat:appcompat:1.0.0')
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.core:core-ktx:1.0.2'
@@ -75,8 +88,6 @@ dependencies {
 
     // Dynamic Feature Module Support
     implementation "androidx.navigation:navigation-dynamic-features-fragment:$nav_version"
-
-
 
 
     androidTestImplementation 'androidx.test:rules:1.1.0'

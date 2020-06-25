@@ -7,6 +7,10 @@
 
     <string name="preference_file_key">com.cusyas.paycheck.PREFERENCE_FILE_KEY</string>
     <string name="most_recent_paid_month_key">com.cusyas.paycheck.most_recent_paid_month</string>
+    <string name="bill_notification_hour">com.cusyas.paycheck.notification_hour</string>
+    <string name="bill_notification_minute">com.cusyas.paycheck.notification_minute</string>
+    <string name="bill_worker_created">com.cusyas.paycheck.bill_worker_created</string>
+
 
 
     <string name="bill_due_on">Due On:&#160;</string>
@@ -30,4 +34,11 @@
     <string name="bill_notification_title">Notification for due bills</string>
     <string name="bills_notification_distance_title">When to send notification</string>
     <string name="reset_settings">Reset Settings</string>
+    <string name="bill_notification_time_title">Notification Time</string>
+
+    <!-- Bill Notification Channel info -->
+    <string name="channel_bill_notification_name">Bills Due </string>
+    <string name="channel_bill_notification_description">Notifications for bills that are due</string>
+    <string name="worker_bill_notification_tag">billNotification</string>
+
 </resources>
