@@ -13,7 +13,12 @@ import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreferenceCompat
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
 import com.cusyas.android.paycheck.R
+import com.cusyas.android.paycheck.utils.BillDueDateDistance
+import com.cusyas.android.paycheck.utils.NotificationWorker
+import java.util.concurrent.TimeUnit
 
 class SettingsActivity : AppCompatActivity() {
 
@@ -86,8 +91,8 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         private fun notificationTimeSummarySetter() {
-            var displayHour: Int
-            var displayDayNight: String
+            val displayHour: Int
+            val displayDayNight: String
             when {
                 notificationHour > 12 -> {
                     displayHour = notificationHour - 12
@@ -122,6 +127,14 @@ class SettingsActivity : AppCompatActivity() {
                 commit()
             }
             notificationTimeSummarySetter()
+
+            WorkManager.getInstance(requireContext()).cancelAllWorkByTag(getString(R.string.worker_bill_notification_tag))
+
+            val notificationWorkRequest = OneTimeWorkRequestBuilder<NotificationWorker>()
+                .setInitialDelay(BillDueDateDistance.getMinutesForWorker(requireContext()), TimeUnit.MINUTES)
+                .addTag(requireContext().getString(R.string.worker_bill_notification_tag))
+                .build()
+            WorkManager.getInstance(requireContext()).enqueue(notificationWorkRequest)
         }
     }
 }
