@@ -11,6 +11,12 @@ interface BillDao {
 
     @Query("SELECT * FROM bill_table WHERE bill_paid = 0")
     fun getUnpaidBills(): List<Bill>
+    
+    @Query("SELECT * FROM bill_table WHERE bill_due_date = :day")
+    fun getUnpaidDue(day: Int): List<Bill>
+
+    @Query ("SELECT * FROM bill_table WHERE bill_due_date = :dayOne OR bill_due_date = :dayTwo")
+    fun getUnpaidBothDue(dayOne: Int, dayTwo: Int): List<Bill>
 
     @Query("SELECT * FROM bill_table WHERE bill_id IN (:billIds)")
     fun loadAllByIds(billIds: IntArray): LiveData<List<Bill>>

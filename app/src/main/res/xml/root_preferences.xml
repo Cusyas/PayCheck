@@ -5,8 +5,9 @@
         app:iconSpaceReserved="false">
 
         <SwitchPreferenceCompat
-            app:key="bills_notification"
+            app:defaultValue="true"
             app:iconSpaceReserved="false"
+            app:key="bills_notification"
             app:title="@string/bill_notification_title"
             app:useSimpleSummaryProvider="true" />
 
