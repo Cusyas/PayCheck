@@ -104,8 +104,8 @@ class SettingsActivity : AppCompatActivity() {
                 }
             }
             when {
-                notificationMinute < 6 -> {
-                    prefTimePicker.summary = "$displayHour:${notificationMinute}0 $displayDayNight"
+                notificationMinute < 10 -> {
+                    prefTimePicker.summary = "$displayHour:0${notificationMinute} $displayDayNight"
                 }
                 else -> {
                     prefTimePicker.summary = "$displayHour:$notificationMinute $displayDayNight"
