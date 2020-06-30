@@ -1,37 +1,24 @@
 package com.cusyas.android.paycheck.fragments
 
-import android.app.Activity
-import android.content.Intent
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
+
+import android.app.AlertDialog
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.*
 import android.widget.Toast
-import android.app.AlertDialog
-import android.app.AlertDialog.THEME_DEVICE_DEFAULT_DARK
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.Navigation.findNavController
-import androidx.navigation.findNavController
-import androidx.navigation.fragment.NavHostFragment.findNavController
 import androidx.navigation.fragment.findNavController
-import com.cusyas.android.paycheck.MainActivity
 import com.cusyas.android.paycheck.R
 import com.cusyas.android.paycheck.billDatabase.Bill
 import com.cusyas.android.paycheck.billDatabase.BillViewModel
 import com.cusyas.android.paycheck.databinding.FragmentBillViewBinding
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import kotlinx.android.synthetic.main.activity_new_bill.*
 import java.text.NumberFormat
-import java.util.*
 
-/**
- * A simple [Fragment] subclass.
- */
+
 class BillNewFragment : Fragment() {
 
     private lateinit var bill: Bill
