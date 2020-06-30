@@ -40,7 +40,7 @@ android {
 dependencies {
     def work_version = "2.3.4"
     def lifecycle_version = "2.2.0"
-    def material_version = "1.1.0"
+    def material_version = "1.2.0-beta01"
     def preference_version = "1.1.1"
     def nav_version = "2.3.0-beta01"
 

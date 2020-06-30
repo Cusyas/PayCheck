@@ -1,18 +1,18 @@
 package com.cusyas.android.paycheck
 
 import android.content.Context
-import android.content.Intent
 import android.graphics.Color.*
 import android.graphics.drawable.*
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.RecyclerView
 import com.cusyas.android.paycheck.billDatabase.Bill
-import com.cusyas.android.paycheck.fragments.BillEditFragment
 import com.cusyas.android.paycheck.fragments.BillListFragmentDirections
 import com.cusyas.android.paycheck.utils.BillDueDateDistance
 import java.text.NumberFormat
@@ -33,7 +33,7 @@ class BillListAdapter internal constructor(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BillViewHolder{
-        val itemView = inflater.inflate(R.layout.recyclerview_item, parent, false)
+        val itemView = inflater.inflate(R.layout.recyclerview_bill, parent, false)
         val viewHolder = BillViewHolder(itemView)
         itemView.setOnClickListener {
             onClick(viewHolder.layoutPosition, itemView)
@@ -96,9 +96,9 @@ class BillListAdapter internal constructor(
 
 
     private fun onClick(position: Int, v: View) {
-
+        val extras = FragmentNavigatorExtras(v to v.context.getString(R.string.bill_transition_name))
         val action = BillListFragmentDirections.actionBillListFragmentToBillEditFragment(bills[position].bill_id)
-        v.findNavController().navigate(action)
+        v.findNavController().navigate(action, extras)
         //intent.putExtra(v.context.getString(R.string.bill_id), bills[position].bill_id)
 
     }

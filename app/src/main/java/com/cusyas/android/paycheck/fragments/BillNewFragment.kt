@@ -25,6 +25,7 @@ import com.cusyas.android.paycheck.billDatabase.BillViewModel
 import com.cusyas.android.paycheck.databinding.FragmentBillViewBinding
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.transition.MaterialContainerTransform
 import kotlinx.android.synthetic.main.activity_new_bill.*
 import java.text.NumberFormat
 import java.util.*
@@ -44,6 +45,11 @@ class BillNewFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_new_bill, container, false)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        sharedElementEnterTransition = MaterialContainerTransform()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

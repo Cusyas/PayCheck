@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.BillNewFragment">
+    tools:context=".fragments.BillNewFragment"
+    android:transitionName="fab_element_container">
 
     <fragment
         android:id="@+id/fragment"

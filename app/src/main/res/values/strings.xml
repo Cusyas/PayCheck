@@ -40,5 +40,6 @@
     <string name="channel_bill_notification_name">Bills Due </string>
     <string name="channel_bill_notification_description">Notifications for bills that are due</string>
     <string name="worker_bill_notification_tag">billNotification</string>
+    <string name="bill_transition_name">bill_list_transition</string>
 
 </resources>

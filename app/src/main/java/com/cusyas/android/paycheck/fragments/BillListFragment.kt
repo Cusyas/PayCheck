@@ -12,6 +12,7 @@ import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.cusyas.android.paycheck.BillListAdapter
@@ -19,6 +20,7 @@ import com.cusyas.android.paycheck.NewBillActivity
 import com.cusyas.android.paycheck.R
 import com.cusyas.android.paycheck.billDatabase.BillViewModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.transition.Hold
 import java.text.NumberFormat
 import java.util.*
 
@@ -79,7 +81,8 @@ class BillListFragment : Fragment() {
 
         val fab = activity?.findViewById<FloatingActionButton>(R.id.fab)
         fab?.setOnClickListener {
-            it.findNavController().navigate(R.id.action_billListFragment_to_newBillFragment)
+            val extras = FragmentNavigatorExtras(fab to "fab_element_container")
+            it.findNavController().navigate(R.id.action_billListFragment_to_newBillFragment, null, null, extras)
         }
         (activity as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
     }
@@ -87,8 +90,10 @@ class BillListFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val callback = requireActivity().onBackPressedDispatcher.addCallback(this){
+        requireActivity().onBackPressedDispatcher.addCallback(this){
             requireActivity().finishAffinity()
         }
+
+        exitTransition = Hold()
     }
 }
