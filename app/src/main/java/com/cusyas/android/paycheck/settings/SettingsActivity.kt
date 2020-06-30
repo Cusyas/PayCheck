@@ -98,6 +98,14 @@ class SettingsActivity : AppCompatActivity() {
                     displayHour = notificationHour - 12
                     displayDayNight = "PM"
                 }
+                notificationHour == 0 -> {
+                    displayHour = 12
+                    displayDayNight = "AM"
+                }
+                notificationHour == 12 -> {
+                    displayHour = notificationHour
+                    displayDayNight = "PM"
+                }
                 else -> {
                     displayHour = notificationHour
                     displayDayNight = "AM"
