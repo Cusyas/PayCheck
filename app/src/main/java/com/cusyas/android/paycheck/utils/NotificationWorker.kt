@@ -82,10 +82,10 @@ class NotificationWorker(context: Context, workerParameters: WorkerParameters):
             paymentAmount += bill.bill_amount
         }
 
-        val cleanString: String = paymentAmount.toString().replace(".", "")
+        //val cleanString: String = paymentAmount.toString().replace(".", "")
 
-        val parsed: Double = cleanString.toDouble()
-        val billAmountFormatted: String = NumberFormat.getCurrencyInstance().format(parsed/100)
+        //val parsed: Double = cleanString.toDouble()
+        val billAmountFormatted: String = NumberFormat.getCurrencyInstance().format(paymentAmount)
 
         val intent = Intent(contextUse, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
@@ -100,7 +100,7 @@ class NotificationWorker(context: Context, workerParameters: WorkerParameters):
         val notificationBuilder = NotificationCompat.Builder(contextUse, "Bill Notification")
             .setSmallIcon(R.drawable.pay_check_logo)
             .setContentTitle("Bills Due")
-            .setContentText("You have $billAmount $billAmountLabel due worth ${billAmountFormatted}")
+            .setContentText("You have $billAmount $billAmountLabel due worth $billAmountFormatted")
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setContentIntent(pendingIntent)
             .setAutoCancel(true)
