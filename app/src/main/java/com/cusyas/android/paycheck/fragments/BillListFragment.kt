@@ -1,10 +1,12 @@
 package com.cusyas.android.paycheck.fragments
 
+import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
@@ -57,6 +59,9 @@ class BillListFragment : Fragment() {
         val adapter = activity?.applicationContext?.let { BillListAdapter(it) }
         recyclerView?.adapter = adapter
         recyclerView?.layoutManager = LinearLayoutManager(activity?.applicationContext)
+
+        val inputMethodManager = context?.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputMethodManager.hideSoftInputFromWindow(totalDueTextView?.windowToken, 0)
 
         val billViewModel = ViewModelProvider(this).get(BillViewModel::class.java)
 
